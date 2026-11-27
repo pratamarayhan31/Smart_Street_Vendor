@@ -1,53 +1,60 @@
 import React, { useState } from 'react';
 import { HeaderBranding } from '@/components/layout/HeaderBranding';
 import { useRouter, Link } from '@/lib/router';
-import { addOrUpdateVendor, setCurrentUser } from '@/lib/store';
+import { registerApi } from '@/lib/api';
 import { DISTRICTS, CATEGORIES } from '@/lib/data';
-import { Store, UserPlus, CheckCircle2, ArrowRight } from 'lucide-react';
+import { UserPlus, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
   const { navigate } = useRouter();
 
   const [ownerName, setOwnerName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [nik, setNik] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0].name);
   const [district, setDistrict] = useState(DISTRICTS[0].name);
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    // Buat data pedagang baru ke storage
-    const newVendor = addOrUpdateVendor({
-      ownerName,
-      phone,
-      nik,
-      businessName,
-      category,
-      district,
-      subDistrict: DISTRICTS.find((d) => d.name === district)?.subDistricts[0] || 'Kelurahan',
-      address: `Jl. Protokol ${district}, Bandar Lampung`,
-      description: `Usaha ${category} oleh ${ownerName}. Menyediakan aneka hidangan/produk berkualitas.`,
-      status: 'menunggu',
-      isPublic: false,
-    });
+    if (password.length < 6) {
+      setError('Kata sandi akun minimal 6 karakter.');
+      return;
+    }
 
-    // Login sebagai pedagang baru
-    setCurrentUser({
-      id: `user-${newVendor.id}`,
-      name: ownerName,
-      email: `${phone}@pkl-lampung.id`,
-      role: 'pedagang',
-      vendorId: newVendor.id,
-    });
+    setLoading(true);
+    try {
+      const subDistrict = DISTRICTS.find((d) => d.name === district)?.subDistricts[0] || 'Kelurahan';
+      await registerApi({
+        ownerName,
+        phone,
+        email,
+        nik,
+        password,
+        businessName,
+        category,
+        district,
+        subDistrict,
+        address: `Jl. Protokol ${district}, Bandar Lampung`,
+        description: `Usaha ${category} oleh ${ownerName}. Menyediakan aneka hidangan/produk berkualitas.`,
+      });
 
-    setSuccess(true);
-    setTimeout(() => {
-      navigate('/pedagang/dashboard');
-    }, 1200);
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/pedagang/dashboard');
+      }, 1200);
+    } catch (err: any) {
+      setError(err.message || 'Gagal mendaftarkan akun. Periksa kembali data Anda.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,6 +87,13 @@ export const RegisterPage: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-semibold flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1">
@@ -113,16 +127,16 @@ export const RegisterPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-text-primary mb-1">
-                    Nomor Induk Kependudukan (NIK)
+                    Alamat Email *
                   </label>
                   <input
-                    type="text"
-                    value={nik}
-                    onChange={(e) => setNik(e.target.value)}
-                    placeholder="1871xxxxxxxxxxxx (Internal)"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="nama@gmail.com"
                     className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
-                  <span className="text-[10px] text-text-muted">Dijaga kerahasiaannya oleh sistem.</span>
                 </div>
 
                 <div>
@@ -132,12 +146,27 @@ export const RegisterPage: React.FC = () => {
                   <input
                     type="password"
                     required
+                    minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
                     className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-text-primary mb-1">
+                  Nomor Induk Kependudukan (NIK)
+                </label>
+                <input
+                  type="text"
+                  value={nik}
+                  onChange={(e) => setNik(e.target.value)}
+                  placeholder="1871xxxxxxxxxxxx (Internal)"
+                  className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                />
+                <span className="text-[10px] text-text-muted">Dijaga kerahasiaannya oleh sistem &amp; dapat digunakan untuk verifikasi lupa kata sandi.</span>
               </div>
 
               <div className="pt-2 border-t border-border-subtle space-y-4">
@@ -194,10 +223,11 @@ export const RegisterPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full mt-4 py-3 px-4 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                disabled={loading}
+                className="w-full mt-4 py-3 px-4 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 <UserPlus className="w-4 h-4" />
-                <span>Kirim Pendaftaran Usaha PKL</span>
+                <span>{loading ? 'Mendaftarkan Akun...' : 'Kirim Pendaftaran Usaha PKL'}</span>
               </button>
             </form>
           )}
@@ -213,4 +243,3 @@ export const RegisterPage: React.FC = () => {
     </div>
   );
 };
-

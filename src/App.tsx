@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from '@/lib/router';
+import { getCurrentUser } from '@/lib/store';
+import { Role } from '@/types';
 import { HomePage } from '@/pages/HomePage';
 import { KatalogPage } from '@/pages/KatalogPage';
 import { PublicMapPage } from '@/pages/PublicMapPage';
@@ -21,10 +23,34 @@ import { PedagangProfilePage } from '@/pages/pedagang/PedagangProfilePage';
 import { PedagangLocationPage } from '@/pages/pedagang/PedagangLocationPage';
 import { PedagangStatusPage } from '@/pages/pedagang/PedagangStatusPage';
 
+interface ProtectedRouteProps {
+  requiredRole: Role;
+  children: React.ReactNode;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole, children }) => {
+  const { navigate } = useRouter();
+  const user = getCurrentUser();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    } else if (user.role !== requiredRole) {
+      navigate(user.role === 'admin' ? '/admin/dashboard' : '/pedagang/dashboard');
+    }
+  }, [user, requiredRole, navigate]);
+
+  if (!user || user.role !== requiredRole) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
 export const App: React.FC = () => {
   const { path } = useRouter();
 
-  // Route Dispatcher
+  // Route Dispatcher Publik
   if (path === '/' || path === '') {
     return <HomePage />;
   }
@@ -45,50 +71,94 @@ export const App: React.FC = () => {
     return <RegisterPage />;
   }
 
-  // Admin Routes
+  // Admin Routes (Wajib Login sebagai Admin)
   if (path === '/admin/dashboard' || path === '/admin') {
-    return <AdminDashboard />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminDashboard />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/verifikasi') {
-    return <AdminVerificationPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminVerificationPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/pedagang') {
-    return <AdminVendorsPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminVendorsPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/kategori') {
-    return <AdminCategoriesPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminCategoriesPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/wilayah') {
-    return <AdminDistrictsPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminDistrictsPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/peta') {
-    return <AdminMapPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminMapPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/admin/laporan') {
-    return <AdminReportPage />;
+    return (
+      <ProtectedRoute requiredRole="admin">
+        <AdminReportPage />
+      </ProtectedRoute>
+    );
   }
 
-  // Pedagang Routes
+  // Pedagang Routes (Wajib Login sebagai Pedagang)
   if (path === '/pedagang/dashboard' || path === '/pedagang') {
-    return <PedagangDashboard />;
+    return (
+      <ProtectedRoute requiredRole="pedagang">
+        <PedagangDashboard />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/pedagang/profil') {
-    return <PedagangProfilePage />;
+    return (
+      <ProtectedRoute requiredRole="pedagang">
+        <PedagangProfilePage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/pedagang/lokasi') {
-    return <PedagangLocationPage />;
+    return (
+      <ProtectedRoute requiredRole="pedagang">
+        <PedagangLocationPage />
+      </ProtectedRoute>
+    );
   }
 
   if (path === '/pedagang/status') {
-    return <PedagangStatusPage />;
+    return (
+      <ProtectedRoute requiredRole="pedagang">
+        <PedagangStatusPage />
+      </ProtectedRoute>
+    );
   }
 
   // Fallback default

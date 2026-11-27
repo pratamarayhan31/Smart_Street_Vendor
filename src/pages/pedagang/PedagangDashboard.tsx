@@ -1,40 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PedagangSidebar } from '@/components/layout/PedagangSidebar';
 import { PedagangHeader } from '@/components/layout/PedagangHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { getStoredVendors } from '@/lib/store';
+import { fetchMyVendorApi } from '@/lib/api';
 import { Vendor } from '@/types';
 import { Link } from '@/lib/router';
 import { 
   Store, 
   MapPin, 
   Clock, 
-  CheckCircle2, 
   AlertTriangle, 
-  User, 
-  ArrowRight,
-  ShieldCheck,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 
 export const PedagangDashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
-  
-  // Ambil data vendor milik user pedagang aktif
-  const myVendor = vendors[0] || {
-    id: 'PKL-001',
-    businessName: 'Soto Betawi Bang Joko',
-    ownerName: 'Pak Joko Santoso',
-    category: 'Kuliner & Makanan Berat',
-    district: 'Tanjung Karang Pusat',
-    subDistrict: 'Palapa',
-    address: 'Jl. R.A. Kartini No. 45',
-    operatingHours: '16:00 - 23:00 WIB',
-    status: 'terverifikasi',
-    photoUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
-    notes: '',
-  };
+  const [myVendor, setMyVendor] = useState<Vendor | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchMyVendorApi()
+      .then((vendor) => {
+        setMyVendor(vendor);
+      })
+      .catch((err) => {
+        setError(err.message || 'Gagal memuat data lapak Anda.');
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden font-sans">
@@ -55,6 +50,17 @@ export const PedagangDashboard: React.FC = () => {
         <PedagangHeader onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-5xl">
+          {loading ? (
+            <div className="bg-white rounded-2xl border border-border-subtle p-12 flex flex-col items-center justify-center gap-3 text-text-muted">
+              <Loader2 className="w-7 h-7 text-primary animate-spin" />
+              <span className="text-xs font-semibold">Memuat data usaha Anda...</span>
+            </div>
+          ) : error || !myVendor ? (
+            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-semibold">
+              {error || 'Data lapak tidak ditemukan.'}
+            </div>
+          ) : (
+          <>
           {/* Banner Selamat Datang */}
           <div className="bg-primary text-white rounded-2xl p-6 sm:p-8 shadow-card flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
             <div className="space-y-2 text-center sm:text-left relative z-10">
@@ -191,6 +197,8 @@ export const PedagangDashboard: React.FC = () => {
               </p>
             </Link>
           </div>
+          </>
+          )}
         </main>
       </div>
     </div>

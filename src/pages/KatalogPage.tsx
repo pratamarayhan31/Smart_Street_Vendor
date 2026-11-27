@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
 import { getStoredVendors, getStoredCategories } from '@/lib/store';
+import { fetchVendorsApi, fetchCategoriesApi } from '@/lib/api';
 import { DISTRICTS } from '@/lib/data';
-import { Vendor } from '@/types';
+import { Vendor, Category } from '@/types';
 import { Link, useRouter } from '@/lib/router';
 import { 
   Search, 
@@ -22,8 +23,17 @@ import {
 
 export const KatalogPage: React.FC = () => {
   const { navigate } = useRouter();
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
-  const [categories] = useState(() => getStoredCategories());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+  const [categories, setCategories] = useState<Category[]>(() => getStoredCategories());
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+    fetchCategoriesApi().then((data) => {
+      if (data && data.length > 0) setCategories(data);
+    }).catch(() => {});
+  }, []);
 
   // State Filter & Pencarian
   const [searchQuery, setSearchQuery] = useState('');

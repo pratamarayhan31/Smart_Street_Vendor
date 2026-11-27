@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { LeafletMap } from '@/components/map/LeafletMap';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
 import { getStoredVendors, getStoredCategories } from '@/lib/store';
-import { Vendor } from '@/types';
+import { fetchVendorsApi, fetchCategoriesApi } from '@/lib/api';
+import { Vendor, Category } from '@/types';
 import { Link, useRouter } from '@/lib/router';
 import { 
   Search, 
@@ -20,9 +21,18 @@ import {
 
 export const HomePage: React.FC = () => {
   const { navigate } = useRouter();
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
-  const [categories] = useState(() => getStoredCategories());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+  const [categories, setCategories] = useState<Category[]>(() => getStoredCategories());
   const [selectedVendorForModal, setSelectedVendorForModal] = useState<Vendor | null>(null);
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+    fetchCategoriesApi().then((data) => {
+      if (data && data.length > 0) setCategories(data);
+    }).catch(() => {});
+  }, []);
 
   const publicVendors = useMemo(() => {
     return vendors.filter((v) => v.isPublic && v.status === 'terverifikasi');

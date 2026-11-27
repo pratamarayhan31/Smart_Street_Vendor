@@ -10,13 +10,20 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { HeaderBranding } from './HeaderBranding';
+import { logoutUser } from '@/lib/store';
 
 interface PedagangSidebarProps {
   onClose?: () => void;
 }
 
 export const PedagangSidebar: React.FC<PedagangSidebarProps> = ({ onClose }) => {
-  const { path } = useRouter();
+  const { path, navigate } = useRouter();
+
+  const handleLogout = () => {
+    logoutUser();
+    if (onClose) onClose();
+    navigate('/login');
+  };
 
   const menuItems = [
     { label: 'Dashboard Usaha', href: '/pedagang/dashboard', icon: Store },
@@ -93,13 +100,14 @@ export const PedagangSidebar: React.FC<PedagangSidebarProps> = ({ onClose }) => 
           </span>
           <span className="text-[10px] text-text-muted">Lihat Web</span>
         </Link>
-        <Link
-          href="/login"
-          className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-primary hover:bg-rose-50 rounded-lg transition-colors"
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-primary hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
           Keluar Akun
-        </Link>
+        </button>
       </div>
     </aside>
   );

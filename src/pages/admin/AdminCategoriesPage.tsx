@@ -1,44 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { getStoredCategories, saveCategories, getStoredVendors } from '@/lib/store';
+import { fetchCategoriesApi, createCategoryApi, deleteCategoryApi, fetchVendorsApi } from '@/lib/api';
 import { Category } from '@/types';
 import { Tags, Plus, Trash2, Edit3, X, Check } from 'lucide-react';
 
 export const AdminCategoriesPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>(() => getStoredCategories());
-  const [vendors] = useState(() => getStoredVendors());
+  const [vendors, setVendors] = useState(() => getStoredVendors());
+
+  useEffect(() => {
+    fetchCategoriesApi().then((data) => {
+      if (data && data.length > 0) setCategories(data);
+    }).catch(() => {});
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
 
-  const handleAddCategory = (e: React.FormEvent) => {
+  const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName.trim()) return;
 
-    const newCat: Category = {
-      id: `cat-${Date.now()}`,
-      name: newName,
-      description: newDesc || 'Kategori dagangan PKL Kota Bandar Lampung.',
-    };
+    try {
+      const created = await createCategoryApi(newName, newDesc || 'Kategori dagangan PKL Kota Bandar Lampung.');
+      const updated = [...categories, created];
+      setCategories(updated);
+      saveCategories(updated);
+    } catch (err) {
+      const newCat: Category = {
+        id: `cat-${Date.now()}`,
+        name: newName,
+        description: newDesc || 'Kategori dagangan PKL Kota Bandar Lampung.',
+      };
+      const updated = [...categories, newCat];
+      setCategories(updated);
+      saveCategories(updated);
+    }
 
-    const updated = [...categories, newCat];
-    setCategories(updated);
-    saveCategories(updated);
     setIsModalOpen(false);
     setNewName('');
     setNewDesc('');
   };
 
-  const handleDeleteCategory = (id: string, name: string) => {
+  const handleDeleteCategory = async (id: string, name: string) => {
     const isUsed = vendors.some((v) => v.category === name);
     if (isUsed) {
       alert(`Kategori "${name}" sedang digunakan oleh pedagang terdaftar. Tidak dapat dihapus langsung.`);
       return;
     }
     if (confirm(`Yakin ingin menghapus kategori "${name}"?`)) {
+      try {
+        await deleteCategoryApi(id);
+      } catch (err) {
+        // Fallback
+      }
       const updated = categories.filter((c) => c.id !== id);
       setCategories(updated);
       saveCategories(updated);

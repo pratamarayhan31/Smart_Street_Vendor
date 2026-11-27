@@ -13,13 +13,20 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { HeaderBranding } from './HeaderBranding';
+import { logoutUser } from '@/lib/store';
 
 interface AdminSidebarProps {
   onClose?: () => void;
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
-  const { path } = useRouter();
+  const { path, navigate } = useRouter();
+
+  const handleLogout = () => {
+    logoutUser();
+    if (onClose) onClose();
+    navigate('/login');
+  };
 
   const menuGroups = [
     {
@@ -111,13 +118,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
           </span>
           <span className="text-[10px] text-text-muted">Lihat Web</span>
         </Link>
-        <Link
-          href="/login"
-          className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-primary hover:bg-rose-50 rounded-lg transition-colors"
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-primary hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
           Keluar Sesi
-        </Link>
+        </button>
       </div>
     </aside>
   );

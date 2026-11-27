@@ -1,11 +1,11 @@
 'use client';
 
-import { Vendor, Category, VerificationStatus, District, User } from '@/types';
-import { INITIAL_VENDORS, CATEGORIES, DISTRICTS } from './data';
+import { Vendor, Category, VerificationStatus, User } from '@/types';
+import { INITIAL_VENDORS, CATEGORIES } from './data';
+import { getStoredSessionUser, clearAuthSession, updateStoredSessionUser } from './api';
 
 const VENDORS_STORAGE_KEY = 'ssv_vendors_data_v1';
 const CATEGORIES_STORAGE_KEY = 'ssv_categories_data_v1';
-const CURRENT_USER_KEY = 'ssv_current_user_v1';
 
 export function getStoredVendors(): Vendor[] {
   if (typeof window === 'undefined') return INITIAL_VENDORS;
@@ -46,40 +46,19 @@ export function saveCategories(categories: Category[]) {
 }
 
 export function getCurrentUser(): User | null {
-  if (typeof window === 'undefined') {
-    return {
-      id: 'admin-1',
-      name: 'Petugas Administrator Pemkot',
-      email: 'admin@bandarlampungkota.go.id',
-      role: 'admin',
-    };
-  }
-  const data = localStorage.getItem(CURRENT_USER_KEY);
-  if (!data) {
-    // Default logged in user (can switch easily between admin and pedagang)
-    const defaultUser: User = {
-      id: 'admin-1',
-      name: 'Petugas Administrator Pemkot',
-      email: 'admin@bandarlampungkota.go.id',
-      role: 'admin',
-    };
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(defaultUser));
-    return defaultUser;
-  }
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return null;
-  }
+  return getStoredSessionUser();
 }
 
 export function setCurrentUser(user: User | null) {
-  if (typeof window === 'undefined') return;
   if (!user) {
-    localStorage.removeItem(CURRENT_USER_KEY);
+    clearAuthSession();
   } else {
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    updateStoredSessionUser(user);
   }
+}
+
+export function logoutUser() {
+  clearAuthSession();
 }
 
 export function updateVendorStatus(
@@ -124,15 +103,14 @@ export function toggleVendorPublication(vendorId: string): Vendor[] {
 export function addOrUpdateVendor(vendorData: Partial<Vendor> & { id?: string }): Vendor {
   const vendors = getStoredVendors();
   const now = new Date().toISOString();
-  
+
   if (vendorData.id && vendors.some((v) => v.id === vendorData.id)) {
-    // Update existing
     const updated = vendors.map((v) => {
       if (v.id === vendorData.id) {
         return {
           ...v,
           ...vendorData,
-          status: 'menunggu' as VerificationStatus, // Reset status to review on edit
+          status: 'menunggu' as VerificationStatus,
           submittedAt: now,
         } as Vendor;
       }
@@ -141,7 +119,6 @@ export function addOrUpdateVendor(vendorData: Partial<Vendor> & { id?: string })
     saveVendors(updated);
     return updated.find((v) => v.id === vendorData.id)!;
   } else {
-    // Create new
     const newId = `PKL-${String(vendors.length + 1).padStart(3, '0')}`;
     const newVendor: Vendor = {
       id: newId,
@@ -168,4 +145,3 @@ export function addOrUpdateVendor(vendorData: Partial<Vendor> & { id?: string })
     return newVendor;
   }
 }
-

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { getStoredVendors, getStoredCategories } from '@/lib/store';
+import { fetchVendorsApi, fetchCategoriesApi } from '@/lib/api';
 import { DISTRICTS } from '@/lib/data';
 import { Vendor } from '@/types';
 import { Link } from '@/lib/router';
@@ -21,8 +22,13 @@ import {
 
 export const AdminDashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
-  const [categories] = useState(() => getStoredCategories());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+  const [categories, setCategories] = useState(() => getStoredCategories());
+
+  useEffect(() => {
+    fetchVendorsApi().then(setVendors).catch(() => {});
+    fetchCategoriesApi().then(setCategories).catch(() => {});
+  }, []);
 
   // Perhitungan Metrik KPI
   const totalVendors = vendors.length;

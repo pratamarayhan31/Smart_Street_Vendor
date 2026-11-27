@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { DISTRICTS } from '@/lib/data';
 import { getStoredVendors } from '@/lib/store';
+import { fetchVendorsApi } from '@/lib/api';
+import { Vendor } from '@/types';
 import { MapPin, Building, Users } from 'lucide-react';
 
 export const AdminDistrictsPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors] = useState(() => getStoredVendors());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+  }, []);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden font-sans">

@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { getStoredVendors } from '@/lib/store';
+import { fetchVendorsApi } from '@/lib/api';
 import { DISTRICTS, CATEGORIES } from '@/lib/data';
+import { Vendor } from '@/types';
 import { FileText, Printer, Download, Filter, CheckCircle2 } from 'lucide-react';
 
 export const AdminReportPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors] = useState(() => getStoredVendors());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
   const [selectedDistrict, setSelectedDistrict] = useState('Semua');
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+  }, []);
 
   const filteredVendors = vendors.filter((v) => {
     return selectedDistrict === 'Semua' || v.district === selectedDistrict;

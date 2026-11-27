@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { getStoredVendors, updateVendorStatus } from '@/lib/store';
+import { fetchVendorsApi, updateVendorStatusApi } from '@/lib/api';
 import { Vendor, VerificationStatus } from '@/types';
 import { 
   CheckSquare, 
@@ -33,6 +34,14 @@ export const AdminVerificationPage: React.FC = () => {
   const [notes, setNotes] = useState('');
   const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetchVendorsApi().then((list) => {
+      if (list && list.length > 0) {
+        setVendors(list);
+      }
+    }).catch(() => {});
+  }, []);
+
   const selectedVendor = vendors.find((v) => v.id === selectedVendorId) || vendors[0];
 
   const filteredQueue = vendors.filter((v) => {
@@ -46,7 +55,7 @@ export const AdminVerificationPage: React.FC = () => {
     return matchStatus && matchSearch;
   });
 
-  const handleDecision = (decision: VerificationStatus) => {
+  const handleDecision = async (decision: VerificationStatus) => {
     if (!selectedVendor) return;
 
     if ((decision === 'revisi' || decision === 'ditolak') && !notes.trim()) {
@@ -61,6 +70,18 @@ export const AdminVerificationPage: React.FC = () => {
       'Admin Dinas Koperasi & UMKM'
     );
     setVendors(updated);
+
+    try {
+      await updateVendorStatusApi(
+        selectedVendor.id,
+        decision,
+        notes || undefined,
+        'Admin Dinas Koperasi & UMKM'
+      );
+    } catch (err) {
+      // Local fallback already applied
+    }
+
     setNotes('');
 
     const labelMap: Record<VerificationStatus, string> = {

@@ -49,8 +49,21 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: Role;
   vendorId?: string;
+}
+
+export interface UserAccount {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: Role;
+  vendorId?: string;
+  createdAt: string;
 }
 
 export interface VerificationLog {

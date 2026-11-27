@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
 import { getStoredVendors, toggleVendorPublication, addOrUpdateVendor } from '@/lib/store';
+import { fetchVendorsApi, toggleVendorPublicApi, createVendorAdminApi } from '@/lib/api';
 import { DISTRICTS, CATEGORIES } from '@/lib/data';
 import { Vendor } from '@/types';
 import { 
@@ -26,6 +27,12 @@ export const AdminVendorsPage: React.FC = () => {
   const [filterDistrict, setFilterDistrict] = useState('Semua');
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [modalVendor, setModalVendor] = useState<Vendor | null>(null);
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+  }, []);
 
   // Modal Tambah Pedagang
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -52,14 +59,19 @@ export const AdminVendorsPage: React.FC = () => {
     return matchSearch && matchDistrict && matchStatus;
   });
 
-  const handleTogglePublic = (id: string) => {
+  const handleTogglePublic = async (id: string) => {
     const updated = toggleVendorPublication(id);
     setVendors(updated);
+    try {
+      await toggleVendorPublicApi(id);
+    } catch (e) {
+      // Local fallback active
+    }
   };
 
-  const handleAddSubmit = (e: React.FormEvent) => {
+  const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const created = addOrUpdateVendor({
+    const payload = {
       ownerName: newOwner,
       businessName: newBusiness,
       category: newCategory,
@@ -67,10 +79,20 @@ export const AdminVendorsPage: React.FC = () => {
       phone: newPhone,
       address: newAddress || `Jl. Utama ${newDistrict}`,
       subDistrict: DISTRICTS.find((d) => d.name === newDistrict)?.subDistricts[0] || 'Pusat',
-      status: 'terverifikasi',
-      isPublic: true,
-    });
-    setVendors(getStoredVendors());
+    };
+
+    try {
+      const created = await createVendorAdminApi(payload);
+      setVendors((prev) => [created, ...prev]);
+    } catch (err) {
+      addOrUpdateVendor({
+        ...payload,
+        status: 'terverifikasi',
+        isPublic: true,
+      });
+      setVendors(getStoredVendors());
+    }
+
     setIsAddModalOpen(false);
     setNewOwner('');
     setNewBusiness('');

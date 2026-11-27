@@ -1,16 +1,23 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { AdminSidebar } from '@/components/layout/AdminSidebar';
 import { AdminHeader } from '@/components/layout/AdminHeader';
 import { LeafletMap } from '@/components/map/LeafletMap';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
 import { getStoredVendors } from '@/lib/store';
+import { fetchVendorsApi } from '@/lib/api';
 import { DISTRICTS, CATEGORIES } from '@/lib/data';
 import { Vendor } from '@/types';
 import { Map, Search, Filter, RotateCcw } from 'lucide-react';
 
 export const AdminMapPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+  }, []);
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterDistrict, setFilterDistrict] = useState('Semua');
   const [searchQuery, setSearchQuery] = useState('');

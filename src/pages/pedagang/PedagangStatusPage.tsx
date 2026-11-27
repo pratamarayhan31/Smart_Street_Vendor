@@ -1,47 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PedagangSidebar } from '@/components/layout/PedagangSidebar';
 import { PedagangHeader } from '@/components/layout/PedagangHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { getStoredVendors, addOrUpdateVendor } from '@/lib/store';
+import { fetchMyVendorApi, updateMyVendorApi } from '@/lib/api';
+import { addOrUpdateVendor } from '@/lib/store';
 import { Vendor } from '@/types';
 import { 
   FileCheck, 
   Clock, 
   CheckCircle2, 
   AlertTriangle, 
-  XCircle, 
   Send, 
-  HelpCircle,
-  FileEdit
+  FileEdit,
+  Loader2
 } from 'lucide-react';
 
 export const PedagangStatusPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
-
-  const currentVendor = vendors[0] || {
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [currentVendor, setCurrentVendor] = useState<Vendor>({
     id: 'PKL-001',
-    businessName: 'Soto Betawi Bang Joko',
-    status: 'terverifikasi',
-    submittedAt: '2026-11-10T14:20:00Z',
-    verifiedAt: '2026-11-12T09:15:00Z',
-    verifiedBy: 'Admin Dinas Koperasi & UMKM',
-    notes: '',
-  };
+    userId: 'user-default',
+    businessName: 'Lapak PKL',
+    status: 'menunggu',
+    submittedAt: new Date().toISOString(),
+    ownerName: 'Pedagang',
+    phone: '',
+    category: 'Kuliner',
+    description: '',
+    operatingHours: '16:00 - 22:00 WIB',
+    address: 'Kota Bandar Lampung',
+    district: 'Tanjung Karang Pusat',
+    subDistrict: 'Palapa',
+    latitude: -5.4297,
+    longitude: 105.2625,
+    photoUrl: '',
+    isPublic: false,
+  });
 
   const [revisionNotes, setRevisionNotes] = useState('');
   const [submittedRevision, setSubmittedRevision] = useState(false);
 
-  const handleSendRevision = (e: React.FormEvent) => {
+  const loadData = async () => {
+    try {
+      const v = await fetchMyVendorApi();
+      if (v) setCurrentVendor(v);
+    } catch (err) {
+      // Fallback
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleSendRevision = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updated = addOrUpdateVendor({
-      id: currentVendor.id,
-      notes: undefined, // Bersihkan catatan perbaikan setelah dikirim ulang
-      status: 'menunggu', // Kembalikan ke antrean peninjauan
-    });
-    setVendors(getStoredVendors());
-    setSubmittedRevision(true);
-    setTimeout(() => setSubmittedRevision(false), 4000);
+    setSubmitting(true);
+    try {
+      await updateMyVendorApi({
+        resubmitRevision: true,
+        notes: revisionNotes,
+      });
+      addOrUpdateVendor({
+        id: currentVendor.id,
+        notes: undefined,
+        status: 'menunggu',
+      });
+      await loadData();
+      setSubmittedRevision(true);
+      setRevisionNotes('');
+      setTimeout(() => setSubmittedRevision(false), 4000);
+    } catch (err) {
+      addOrUpdateVendor({
+        id: currentVendor.id,
+        notes: undefined,
+        status: 'menunggu',
+      });
+      setSubmittedRevision(true);
+      setTimeout(() => setSubmittedRevision(false), 4000);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -69,137 +112,146 @@ export const PedagangStatusPage: React.FC = () => {
           {submittedRevision && (
             <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>Data perbaikan berhasil dikirim ulang ke petugas admin untuk ditinjau kembali!</span>
+              <span>Data perbaikan berhasil dikirim ulang ke petugas dinas untuk ditinjau kembali!</span>
             </div>
           )}
 
-          {/* Kartu Status Utama */}
-          <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-4">
-              <div>
-                <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                  No. Registrasi: {currentVendor.id}
-                </span>
-                <h2 className="text-xl font-bold text-text-primary">
-                  {currentVendor.businessName}
-                </h2>
-                <p className="text-xs text-text-muted mt-0.5">
-                  Diajukan pada {new Date(currentVendor.submittedAt).toLocaleDateString('id-ID', { dateStyle: 'full' })}
-                </p>
-              </div>
-              <div>
-                <StatusBadge status={currentVendor.status} size="lg" />
-              </div>
+          {loading ? (
+            <div className="p-12 text-center text-text-muted flex flex-col items-center justify-center gap-2">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <p className="text-sm">Memuat status verifikasi...</p>
             </div>
-
-            {/* Catatan Perbaikan Admin Jika Ada */}
-            {currentVendor.notes && (
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2 text-xs">
-                <div className="flex items-center gap-2 font-bold text-sm text-amber-950">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  <span>Instruksi Catatan Pemeriksaan Petugas:</span>
-                </div>
-                <p className="leading-relaxed bg-white/80 p-3 rounded-lg border border-amber-100 font-medium">
-                  {currentVendor.notes}
-                </p>
-              </div>
-            )}
-
-            {/* Timeline Alur Verifikasi */}
-            <div className="pt-2 space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
-                Tahapan Pemeriksaan Berkas
-              </h3>
-
-              <div className="space-y-4 text-xs">
-                {/* Step 1 */}
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold flex-shrink-0">
-                    ✓
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-text-primary">1. Pendaftaran Berkas Terkirim</span>
-                    <p className="text-text-muted text-[11px]">
-                      Identitas pemilik, informasi usaha, dan foto lapak berhasil disimpan ke sistem.
+          ) : (
+            <>
+              {/* Kartu Status Utama */}
+              <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-4">
+                  <div>
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                      No. Registrasi: {currentVendor.id}
+                    </span>
+                    <h2 className="text-xl font-bold text-text-primary">
+                      {currentVendor.businessName}
+                    </h2>
+                    <p className="text-xs text-text-muted mt-0.5">
+                      Diajukan pada {currentVendor.submittedAt ? new Date(currentVendor.submittedAt).toLocaleDateString('id-ID', { dateStyle: 'full' }) : 'Hari ini'}
                     </p>
                   </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex items-start gap-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                    currentVendor.status === 'menunggu'
-                      ? 'bg-amber-100 text-amber-700 animate-pulse'
-                      : 'bg-emerald-100 text-emerald-700'
-                  }`}>
-                    {currentVendor.status === 'menunggu' ? '•' : '✓'}
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-text-primary">2. Peninjauan oleh Petugas Dinas Terkait</span>
-                    <p className="text-text-muted text-[11px]">
-                      Pemeriksaan kelengkapan administrasi dan kejelasan dokumen usaha PKL.
-                    </p>
+                  <div>
+                    <StatusBadge status={currentVendor.status} size="lg" />
                   </div>
                 </div>
 
-                {/* Step 3 */}
-                <div className="flex items-start gap-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                    currentVendor.status === 'terverifikasi'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : currentVendor.status === 'ditolak'
-                      ? 'bg-rose-100 text-rose-700'
-                      : 'bg-surface-container-low text-text-muted border border-border-subtle'
-                  }`}>
-                    {currentVendor.status === 'terverifikasi' ? '✓' : currentVendor.status === 'ditolak' ? '✕' : '3'}
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-text-primary">3. Validasi Titik Koordinat Lapak &amp; Publikasi</span>
-                    <p className="text-text-muted text-[11px]">
-                      Titik lapak diaktifkan pada Peta Digital Smart Street Vendor untuk diakses masyarakat.
+                {/* Catatan Perbaikan Admin Jika Ada */}
+                {currentVendor.notes && (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2 text-xs">
+                    <div className="flex items-center gap-2 font-bold text-sm text-amber-950">
+                      <AlertTriangle className="w-4 h-4 text-amber-600" />
+                      <span>Instruksi Catatan Pemeriksaan Petugas:</span>
+                    </div>
+                    <p className="leading-relaxed bg-white/80 p-3 rounded-lg border border-amber-100 font-medium">
+                      {currentVendor.notes}
                     </p>
+                  </div>
+                )}
+
+                {/* Timeline Alur Verifikasi */}
+                <div className="pt-2 space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
+                    Tahapan Pemeriksaan Berkas
+                  </h3>
+
+                  <div className="space-y-4 text-xs">
+                    {/* Step 1 */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold flex-shrink-0">
+                        ✓
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-text-primary">1. Pendaftaran Berkas Terkirim</span>
+                        <p className="text-text-muted text-[11px]">
+                          Identitas pemilik, informasi usaha, dan foto lapak berhasil disimpan ke sistem.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="flex items-start gap-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
+                        currentVendor.status === 'menunggu'
+                          ? 'bg-amber-100 text-amber-700 animate-pulse'
+                          : 'bg-emerald-100 text-emerald-700'
+                      }`}>
+                        {currentVendor.status === 'menunggu' ? '•' : '✓'}
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-text-primary">2. Peninjauan oleh Petugas Dinas Terkait</span>
+                        <p className="text-text-muted text-[11px]">
+                          Pemeriksaan kelengkapan administrasi dan kejelasan dokumen usaha PKL.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="flex items-start gap-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
+                        currentVendor.status === 'terverifikasi'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : currentVendor.status === 'ditolak'
+                          ? 'bg-rose-100 text-rose-700'
+                          : 'bg-surface-container-low text-text-muted border border-border-subtle'
+                      }`}>
+                        {currentVendor.status === 'terverifikasi' ? '✓' : currentVendor.status === 'ditolak' ? '✕' : '3'}
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-text-primary">3. Validasi Titik Koordinat Lapak &amp; Publikasi</span>
+                        <p className="text-text-muted text-[11px]">
+                          Titik lapak diaktifkan pada Peta Digital Smart Street Vendor untuk diakses masyarakat.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Form Tindak Lanjut Revisi Jika Status "Perlu Perbaikan" */}
-          {currentVendor.status === 'revisi' && (
-            <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-card space-y-4">
-              <div className="flex items-center gap-2 text-text-primary border-b border-border-subtle pb-3">
-                <FileEdit className="w-5 h-5 text-amber-600" />
-                <h3 className="text-sm font-bold">Kirim Konfirmasi Perbaikan Data</h3>
-              </div>
+              {/* Form Tindak Lanjut Revisi Jika Status "Perlu Perbaikan" */}
+              {currentVendor.status === 'revisi' && (
+                <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-card space-y-4">
+                  <div className="flex items-center gap-2 text-text-primary border-b border-border-subtle pb-3">
+                    <FileEdit className="w-5 h-5 text-amber-600" />
+                    <h3 className="text-sm font-bold">Kirim Konfirmasi Perbaikan Data</h3>
+                  </div>
 
-              <form onSubmit={handleSendRevision} className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-semibold text-text-primary mb-1">
-                    Keterangan Perbaikan yang Telah Dilakukan *
-                  </label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={revisionNotes}
-                    onChange={(e) => setRevisionNotes(e.target.value)}
-                    placeholder="Contoh: Sudah memperbarui foto lapak dan menyesuaikan koordinat titik berjualan..."
-                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-3 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
-                  />
+                  <form onSubmit={handleSendRevision} className="space-y-4 text-xs">
+                    <div>
+                      <label className="block font-semibold text-text-primary mb-1">
+                        Keterangan Perbaikan yang Telah Dilakukan *
+                      </label>
+                      <textarea
+                        rows={3}
+                        required
+                        value={revisionNotes}
+                        onChange={(e) => setRevisionNotes(e.target.value)}
+                        placeholder="Contoh: Sudah memperbarui foto lapak dan menyesuaikan koordinat titik berjualan..."
+                        className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-3 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                      <span>{submitting ? 'Mengirim...' : 'Kirim Ulang untuk Ditinjau Petugas'}</span>
+                    </button>
+                  </form>
                 </div>
-
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Kirim Ulang untuk Ditinjau Petugas</span>
-                </button>
-              </form>
-            </div>
+              )}
+            </>
           )}
         </main>
       </div>
     </div>
   );
 };
-

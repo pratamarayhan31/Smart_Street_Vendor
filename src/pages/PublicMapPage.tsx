@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 import { LeafletMap } from '@/components/map/LeafletMap';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { getStoredVendors, getStoredCategories } from '@/lib/store';
+import { fetchVendorsApi, fetchCategoriesApi } from '@/lib/api';
 import { DISTRICTS } from '@/lib/data';
-import { Vendor } from '@/types';
+import { Vendor, Category } from '@/types';
 import { 
   Search, 
   MapPin, 
@@ -14,8 +15,17 @@ import {
 } from 'lucide-react';
 
 export const PublicMapPage: React.FC = () => {
-  const [vendors] = useState<Vendor[]>(() => getStoredVendors());
-  const [categories] = useState(() => getStoredCategories());
+  const [vendors, setVendors] = useState<Vendor[]>(() => getStoredVendors());
+  const [categories, setCategories] = useState<Category[]>(() => getStoredCategories());
+
+  useEffect(() => {
+    fetchVendorsApi().then((data) => {
+      if (data && data.length > 0) setVendors(data);
+    }).catch(() => {});
+    fetchCategoriesApi().then((data) => {
+      if (data && data.length > 0) setCategories(data);
+    }).catch(() => {});
+  }, []);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Semua');
