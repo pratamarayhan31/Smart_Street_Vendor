@@ -74,13 +74,13 @@ export const PedagangStatusPage: React.FC = () => {
           )}
 
           {/* Kartu Status Utama */}
-          <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-4">
               <div>
-                <span className="text-xs font-bold text-secondary uppercase tracking-wider">
+                <span className="text-xs font-bold text-primary uppercase tracking-wider">
                   No. Registrasi: {currentVendor.id}
                 </span>
-                <h2 className="text-xl font-bold text-primary">
+                <h2 className="text-xl font-bold text-text-primary">
                   {currentVendor.businessName}
                 </h2>
                 <p className="text-xs text-text-muted mt-0.5">
@@ -107,7 +107,7 @@ export const PedagangStatusPage: React.FC = () => {
 
             {/* Timeline Alur Verifikasi */}
             <div className="pt-2 space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
                 Tahapan Pemeriksaan Berkas
               </h3>
 
@@ -118,8 +118,8 @@ export const PedagangStatusPage: React.FC = () => {
                     ✓
                   </div>
                   <div className="space-y-0.5">
-                    <span className="font-bold text-slate-800">1. Pendaftaran Berkas Terkirim</span>
-                    <p className="text-slate-500 text-[11px]">
+                    <span className="font-bold text-text-primary">1. Pendaftaran Berkas Terkirim</span>
+                    <p className="text-text-muted text-[11px]">
                       Identitas pemilik, informasi usaha, dan foto lapak berhasil disimpan ke sistem.
                     </p>
                   </div>
@@ -135,8 +135,8 @@ export const PedagangStatusPage: React.FC = () => {
                     {currentVendor.status === 'menunggu' ? '•' : '✓'}
                   </div>
                   <div className="space-y-0.5">
-                    <span className="font-bold text-slate-800">2. Peninjauan oleh Petugas Dinas Terkait</span>
-                    <p className="text-slate-500 text-[11px]">
+                    <span className="font-bold text-text-primary">2. Peninjauan oleh Petugas Dinas Terkait</span>
+                    <p className="text-text-muted text-[11px]">
                       Pemeriksaan kelengkapan administrasi dan kejelasan dokumen usaha PKL.
                     </p>
                   </div>
@@ -149,13 +149,13 @@ export const PedagangStatusPage: React.FC = () => {
                       ? 'bg-emerald-100 text-emerald-700'
                       : currentVendor.status === 'ditolak'
                       ? 'bg-rose-100 text-rose-700'
-                      : 'bg-slate-100 text-slate-400'
+                      : 'bg-surface-container-low text-text-muted border border-border-subtle'
                   }`}>
                     {currentVendor.status === 'terverifikasi' ? '✓' : currentVendor.status === 'ditolak' ? '✕' : '3'}
                   </div>
                   <div className="space-y-0.5">
-                    <span className="font-bold text-slate-800">3. Validasi Titik Koordinat Lapak &amp; Publikasi</span>
-                    <p className="text-slate-500 text-[11px]">
+                    <span className="font-bold text-text-primary">3. Validasi Titik Koordinat Lapak &amp; Publikasi</span>
+                    <p className="text-text-muted text-[11px]">
                       Titik lapak diaktifkan pada Peta Digital Smart Street Vendor untuk diakses masyarakat.
                     </p>
                   </div>
@@ -166,15 +166,15 @@ export const PedagangStatusPage: React.FC = () => {
 
           {/* Form Tindak Lanjut Revisi Jika Status "Perlu Perbaikan" */}
           {currentVendor.status === 'revisi' && (
-            <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-primary border-b border-slate-100 pb-3">
+            <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-card space-y-4">
+              <div className="flex items-center gap-2 text-text-primary border-b border-border-subtle pb-3">
                 <FileEdit className="w-5 h-5 text-amber-600" />
                 <h3 className="text-sm font-bold">Kirim Konfirmasi Perbaikan Data</h3>
               </div>
 
               <form onSubmit={handleSendRevision} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
+                  <label className="block font-semibold text-text-primary mb-1">
                     Keterangan Perbaikan yang Telah Dilakukan *
                   </label>
                   <textarea
@@ -183,13 +183,13 @@ export const PedagangStatusPage: React.FC = () => {
                     value={revisionNotes}
                     onChange={(e) => setRevisionNotes(e.target.value)}
                     placeholder="Contoh: Sudah memperbarui foto lapak dan menyesuaikan koordinat titik berjualan..."
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-3 outline-none focus:bg-white focus:border-secondary"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-3 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-primary hover:bg-primary-container text-white font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
+                  className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>Kirim Ulang untuk Ditinjau Petugas</span>

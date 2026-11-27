@@ -102,42 +102,42 @@ export const PedagangProfilePage: React.FC = () => {
 
           <form onSubmit={handleSave} className="space-y-6">
             {/* Bagian 1: Data Identitas Pedagang */}
-            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                <User className="w-4 h-4 text-secondary" />
-                <h3 className="text-sm font-bold text-primary">Identitas Pemilik Lapak</h3>
+            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+              <div className="border-b border-border-subtle pb-3 flex items-center gap-2">
+                <User className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-bold text-text-primary">Identitas Pemilik Lapak</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nama Lengkap Pemilik *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Nama Lengkap Pemilik *</label>
                   <input
                     type="text"
                     required
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nomor WhatsApp / HP *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Nomor WhatsApp / HP *</label>
                   <input
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 mb-1">Nomor Induk Kependudukan (NIK)</label>
+                  <label className="block font-semibold text-text-primary mb-1">Nomor Induk Kependudukan (NIK)</label>
                   <input
                     type="text"
                     value={nik}
                     onChange={(e) => setNik(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                   <span className="text-[10px] text-text-muted mt-1 block">
                     Data NIK hanya untuk verifikasi internal petugas dinas dan dirahasiakan dari publik.
@@ -147,30 +147,30 @@ export const PedagangProfilePage: React.FC = () => {
             </div>
 
             {/* Bagian 2: Data Informasi Usaha */}
-            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Store className="w-4 h-4 text-secondary" />
-                <h3 className="text-sm font-bold text-primary">Informasi Lapak &amp; Dagangan</h3>
+            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+              <div className="border-b border-border-subtle pb-3 flex items-center gap-2">
+                <Store className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-bold text-text-primary">Informasi Lapak &amp; Dagangan</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nama Usaha / Lapak *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Nama Usaha / Lapak *</label>
                   <input
                     type="text"
                     required
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Kategori Dagangan *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Kategori Dagangan *</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c.id} value={c.name}>{c.name}</option>
@@ -179,33 +179,33 @@ export const PedagangProfilePage: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 mb-1">Deskripsi Usaha &amp; Menu Utama</label>
+                  <label className="block font-semibold text-text-primary mb-1">Deskripsi Usaha &amp; Menu Utama</label>
                   <textarea
                     rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                     placeholder="Jelaskan menu andalan atau keistimewaan dagangan Anda..."
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Jam Operasional</label>
+                  <label className="block font-semibold text-text-primary mb-1">Jam Operasional</label>
                   <input
                     type="text"
                     value={operatingHours}
                     onChange={(e) => setOperatingHours(e.target.value)}
                     placeholder="Contoh: 16:00 - 23:00 WIB"
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Kecamatan</label>
+                  <label className="block font-semibold text-text-primary mb-1">Kecamatan</label>
                   <select
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   >
                     {DISTRICTS.map((d) => (
                       <option key={d.id} value={d.name}>{d.name}</option>
@@ -214,27 +214,27 @@ export const PedagangProfilePage: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 mb-1">Alamat / Patokan Tempat Berjualan</label>
+                  <label className="block font-semibold text-text-primary mb-1">Alamat / Patokan Tempat Berjualan</label>
                   <input
                     type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Nama jalan atau patokan dekat bangunan terkenal"
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
               </div>
             </div>
 
             {/* Bagian 3: Unggah Foto Lapak */}
-            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-secondary" />
-                <h3 className="text-sm font-bold text-primary">Foto Lapak Tampak Depan</h3>
+            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+              <div className="border-b border-border-subtle pb-3 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-bold text-text-primary">Foto Lapak Tampak Depan</h3>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 items-center">
-                <div className="w-full sm:w-56 h-40 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                <div className="w-full sm:w-56 h-40 rounded-xl overflow-hidden bg-surface-container-low border border-border-subtle flex-shrink-0">
                   <img
                     src={photoUrl}
                     alt="Preview Lapak"
@@ -242,11 +242,11 @@ export const PedagangProfilePage: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-3 text-xs">
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="text-text-muted leading-relaxed">
                     Unggah foto tampak depan lapak Anda yang menampilkan gerobak/tenda dan nama usaha dengan jelas. Format JPG atau PNG, maksimal 2 MB.
                   </p>
-                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-xl cursor-pointer transition-colors border border-slate-200">
-                    <Upload className="w-4 h-4 text-secondary" />
+                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-low hover:bg-surface-container text-text-primary font-semibold rounded-xl cursor-pointer transition-colors border border-border-subtle">
+                    <Upload className="w-4 h-4 text-primary" />
                     <span>Pilih Foto dari Perangkat</span>
                     <input
                       type="file"
@@ -262,7 +262,7 @@ export const PedagangProfilePage: React.FC = () => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-primary hover:bg-primary-container text-white font-semibold text-sm rounded-xl shadow-xs transition-colors"
+                className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Simpan Pembaruan Usaha
               </button>

@@ -51,12 +51,12 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-10 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background flex flex-col justify-center py-10 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div className="inline-block mb-3">
           <HeaderBranding />
         </div>
-        <h2 className="text-2xl font-bold tracking-tight text-primary">
+        <h2 className="text-2xl font-bold tracking-tight text-text-primary">
           Pendaftaran Usaha PKL
         </h2>
         <p className="mt-1 text-xs text-text-muted">
@@ -65,24 +65,24 @@ export const RegisterPage: React.FC = () => {
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-xl px-4">
-        <div className="bg-white py-8 px-6 shadow-md rounded-2xl border border-border-subtle sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-card rounded-2xl border border-border-subtle sm:px-10">
           {success ? (
             <div className="text-center py-8 space-y-4">
-              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto border border-emerald-100">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <h3 className="text-xl font-bold text-text-primary">
                 Pendaftaran Berhasil Dikirim!
               </h3>
-              <p className="text-xs text-slate-600 max-w-sm mx-auto">
-                Akun usaha Anda telah terdaftar dalam sistem dengan status <strong>Menunggu Verifikasi</strong>. Mengalihkan ke dashboard...
+              <p className="text-xs text-text-muted max-w-sm mx-auto">
+                Akun usaha Anda telah terdaftar dalam sistem dengan status <strong className="text-primary">Menunggu Verifikasi</strong>. Mengalihkan ke dashboard...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-text-primary mb-1">
                     Nama Lengkap Pemilik *
                   </label>
                   <input
@@ -91,12 +91,12 @@ export const RegisterPage: React.FC = () => {
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     placeholder="Contoh: Bpk. Ahmad Dahlan"
-                    className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                    className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-text-primary mb-1">
                     Nomor WhatsApp / HP *
                   </label>
                   <input
@@ -105,14 +105,14 @@ export const RegisterPage: React.FC = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="08xxxxxxxxxx"
-                    className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                    className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-text-primary mb-1">
                     Nomor Induk Kependudukan (NIK)
                   </label>
                   <input
@@ -120,13 +120,13 @@ export const RegisterPage: React.FC = () => {
                     value={nik}
                     onChange={(e) => setNik(e.target.value)}
                     placeholder="1871xxxxxxxxxxxx (Internal)"
-                    className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                    className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
-                  <span className="text-[10px] text-slate-400">Dijaga kerahasiaannya oleh sistem.</span>
+                  <span className="text-[10px] text-text-muted">Dijaga kerahasiaannya oleh sistem.</span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-text-primary mb-1">
                     Kata Sandi Akun *
                   </label>
                   <input
@@ -135,18 +135,18 @@ export const RegisterPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
-                    className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                    className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-secondary">
+              <div className="pt-2 border-t border-border-subtle space-y-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-primary">
                   Informasi Lapak Usaha
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-text-primary mb-1">
                     Nama Usaha / Lapak Dagangan *
                   </label>
                   <input
@@ -155,19 +155,19 @@ export const RegisterPage: React.FC = () => {
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     placeholder="Contoh: Pempek Cek Meymey Way Halim"
-                    className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                    className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-semibold text-text-primary mb-1">
                       Kategori Dagangan *
                     </label>
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                      className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                     >
                       {CATEGORIES.map((c) => (
                         <option key={c.id} value={c.name}>{c.name}</option>
@@ -176,13 +176,13 @@ export const RegisterPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-semibold text-text-primary mb-1">
                       Wilayah Kecamatan *
                     </label>
                     <select
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
-                      className="w-full text-xs bg-white border border-border-subtle rounded-xl px-3.5 py-2.5 outline-none focus:border-secondary"
+                      className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl px-3.5 py-2.5 text-text-primary outline-none focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                     >
                       {DISTRICTS.map((d) => (
                         <option key={d.id} value={d.name}>{d.name}</option>
@@ -194,7 +194,7 @@ export const RegisterPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full mt-4 py-3 px-4 bg-primary hover:bg-primary-container text-white font-semibold text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2"
+                className="w-full mt-4 py-3 px-4 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Kirim Pendaftaran Usaha PKL</span>
@@ -204,7 +204,7 @@ export const RegisterPage: React.FC = () => {
 
           <div className="mt-6 text-center text-xs text-text-muted">
             Sudah memiliki akun?{' '}
-            <Link href="/login" className="font-semibold text-secondary hover:underline">
+            <Link href="/login" className="font-semibold text-primary hover:underline">
               Masuk ke Portal
             </Link>
           </div>

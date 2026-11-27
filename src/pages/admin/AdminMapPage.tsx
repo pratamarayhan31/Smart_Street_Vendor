@@ -52,23 +52,23 @@ export const AdminMapPage: React.FC = () => {
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-4 max-w-7xl flex-1 flex flex-col">
           {/* Filter Bar */}
-          <div className="bg-white p-3.5 rounded-2xl border border-border-subtle shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="bg-white p-3.5 rounded-2xl border border-border-subtle shadow-card flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center gap-2 flex-1">
               <div className="relative min-w-[200px]">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                <Search className="w-3.5 h-3.5 text-text-muted absolute left-2.5 top-2.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari lapak PKL..."
-                  className="w-full text-xs bg-slate-50 border border-border-subtle rounded-xl pl-8 pr-3 py-2 outline-none"
+                  className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl pl-8 pr-3 py-2 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary transition-all"
                 />
               </div>
 
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="bg-slate-50 border border-border-subtle rounded-xl px-3 py-2 text-slate-700 outline-none"
+                className="bg-surface-container-low border border-border-subtle rounded-xl px-3 py-2 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
               >
                 <option value="Semua">Semua Status ({vendors.length})</option>
                 <option value="terverifikasi">Terverifikasi</option>
@@ -80,7 +80,7 @@ export const AdminMapPage: React.FC = () => {
               <select
                 value={filterDistrict}
                 onChange={(e) => setFilterDistrict(e.target.value)}
-                className="bg-slate-50 border border-border-subtle rounded-xl px-3 py-2 text-slate-700 outline-none"
+                className="bg-surface-container-low border border-border-subtle rounded-xl px-3 py-2 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
               >
                 <option value="Semua">Semua Kecamatan</option>
                 {DISTRICTS.map((d) => (
@@ -89,13 +89,13 @@ export const AdminMapPage: React.FC = () => {
               </select>
             </div>
 
-            <div className="text-slate-500 font-semibold">
-              Menampilkan {filteredVendors.length} titik lapak
+            <div className="text-text-muted font-semibold">
+              Menampilkan <span className="text-primary font-bold">{filteredVendors.length}</span> titik lapak
             </div>
           </div>
 
           {/* Container Peta */}
-          <div className="flex-1 min-h-[500px] rounded-2xl overflow-hidden shadow-xs border border-border-subtle">
+          <div className="flex-1 min-h-[500px] rounded-2xl overflow-hidden shadow-card border border-border-subtle">
             <LeafletMap
               vendors={filteredVendors}
               onSelectVendor={(v) => setModalVendor(v)}

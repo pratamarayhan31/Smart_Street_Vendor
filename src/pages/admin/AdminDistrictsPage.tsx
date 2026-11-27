@@ -32,8 +32,8 @@ export const AdminDistrictsPage: React.FC = () => {
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl">
           <div>
-            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-secondary" />
+            <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" />
               Kecamatan &amp; Kelurahan Kota Bandar Lampung
             </h2>
             <p className="text-xs text-text-muted">
@@ -50,31 +50,31 @@ export const AdminDistrictsPage: React.FC = () => {
               return (
                 <div
                   key={district.id}
-                  className="bg-white p-5 rounded-2xl border border-border-subtle shadow-xs space-y-3"
+                  className="bg-white p-5 rounded-2xl border border-border-subtle shadow-card space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">
                       Kecamatan
                     </span>
-                    <span className="text-xs font-semibold text-secondary bg-surface-container-low px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-xs font-semibold text-primary bg-surface-container px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-border-subtle">
                       <Users className="w-3 h-3" />
                       <span>{vendorCount} PKL</span>
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-primary">
+                  <h3 className="text-base font-bold text-text-primary">
                     {district.name}
                   </h3>
 
                   <div>
-                    <span className="text-[11px] font-semibold text-slate-500 block mb-1.5">
+                    <span className="text-[11px] font-semibold text-text-muted block mb-1.5">
                       Kelurahan Cakupan ({district.subDistricts.length}):
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {district.subDistricts.map((sub) => (
                         <span
                           key={sub}
-                          className="text-[11px] bg-slate-50 border border-slate-200 text-slate-700 px-2 py-0.5 rounded-md"
+                          className="text-[11px] bg-surface-container-low border border-border-subtle text-text-primary px-2 py-0.5 rounded-md"
                         >
                           {sub}
                         </span>

@@ -56,33 +56,36 @@ export const PedagangDashboard: React.FC = () => {
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-5xl">
           {/* Banner Selamat Datang */}
-          <div className="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center sm:text-left">
-              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+          <div className="bg-primary text-white rounded-2xl p-6 sm:p-8 shadow-card flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="space-y-2 text-center sm:text-left relative z-10">
+              <span className="text-xs font-bold text-white uppercase tracking-wider bg-white/15 px-2.5 py-1 rounded-full border border-white/25 inline-block">
                 Layanan Mandiri PKL Kota Bandar Lampung
               </span>
               <h2 className="text-2xl font-bold">
                 Selamat Datang, {myVendor.ownerName}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+              <p className="text-xs sm:text-sm text-white/90 max-w-xl">
                 Pantau perkembangan status verifikasi berkas dan perbarui informasi lokasi lapak Anda agar mudah ditemukan pelanggan.
               </p>
             </div>
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 relative z-10">
               <StatusBadge status={myVendor.status} size="lg" />
+            </div>
+            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-8 translate-y-8">
+              <Store className="w-56 h-56 text-white" />
             </div>
           </div>
 
           {/* Kotak Peringatan Jika Ada Catatan Perbaikan */}
           {myVendor.notes && (
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3 text-amber-900">
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3 text-amber-900 shadow-xs">
               <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
                 <strong className="text-sm font-bold block">Perhatian: Catatan Perbaikan dari Petugas Admin</strong>
                 <p>{myVendor.notes}</p>
                 <Link
                   href="/pedagang/status"
-                  className="font-semibold text-amber-900 underline inline-block pt-1"
+                  className="font-semibold text-primary underline inline-block pt-1 hover:text-primary-hover"
                 >
                   Perbaiki Data Sekarang &rarr;
                 </Link>
@@ -91,19 +94,19 @@ export const PedagangDashboard: React.FC = () => {
           )}
 
           {/* Ringkasan Profil Lapak */}
-          <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-6">
+          <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-6">
             <div className="flex flex-col sm:flex-row gap-6">
               <img
                 src={myVendor.photoUrl}
                 alt={myVendor.businessName}
-                className="w-full sm:w-44 h-40 rounded-xl object-cover border border-slate-200"
+                className="w-full sm:w-44 h-40 rounded-xl object-cover border border-border-subtle shadow-xs"
               />
               <div className="flex-1 space-y-3">
                 <div>
-                  <span className="text-xs font-bold text-secondary uppercase">
+                  <span className="text-xs font-bold text-primary uppercase">
                     {myVendor.category}
                   </span>
-                  <h3 className="text-xl font-bold text-primary">
+                  <h3 className="text-xl font-bold text-text-primary">
                     {myVendor.businessName}
                   </h3>
                   <p className="text-xs text-text-muted mt-0.5">
@@ -112,12 +115,12 @@ export const PedagangDashboard: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <MapPin className="w-4 h-4 text-secondary flex-shrink-0" />
+                  <div className="flex items-center gap-2 text-text-primary">
+                    <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
                     <span>{myVendor.district}, {myVendor.address}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                  <div className="flex items-center gap-2 text-text-primary">
+                    <Clock className="w-4 h-4 text-text-muted flex-shrink-0" />
                     <span>{myVendor.operatingHours || '16:00 - 22:00 WIB'}</span>
                   </div>
                 </div>
@@ -125,13 +128,13 @@ export const PedagangDashboard: React.FC = () => {
                 <div className="pt-2 flex flex-wrap gap-2">
                   <Link
                     href="/pedagang/profil"
-                    className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5"
+                    className="px-3.5 py-1.5 bg-surface-container-low hover:bg-surface-container text-text-primary text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 border border-border-subtle"
                   >
                     <span>Ubah Profil Usaha</span>
                   </Link>
                   <Link
                     href="/pedagang/lokasi"
-                    className="px-3.5 py-1.5 bg-secondary/10 hover:bg-secondary/20 text-secondary text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
                   >
                     <MapPin className="w-3.5 h-3.5" />
                     <span>Atur Titik Peta</span>
@@ -145,12 +148,12 @@ export const PedagangDashboard: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
               href="/pedagang/profil"
-              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-secondary shadow-xs transition-all space-y-2 group"
+              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-primary shadow-card transition-all space-y-2 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors border border-border-subtle">
                 <Store className="w-5 h-5" />
               </div>
-              <h4 className="text-sm font-bold text-primary group-hover:text-secondary">
+              <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">
                 Data &amp; Foto Usaha
               </h4>
               <p className="text-xs text-text-muted">
@@ -160,12 +163,12 @@ export const PedagangDashboard: React.FC = () => {
 
             <Link
               href="/pedagang/lokasi"
-              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-secondary shadow-xs transition-all space-y-2 group"
+              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-primary shadow-card transition-all space-y-2 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors border border-border-subtle">
                 <MapPin className="w-5 h-5" />
               </div>
-              <h4 className="text-sm font-bold text-primary group-hover:text-secondary">
+              <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">
                 Titik Lokasi Peta
               </h4>
               <p className="text-xs text-text-muted">
@@ -175,12 +178,12 @@ export const PedagangDashboard: React.FC = () => {
 
             <Link
               href="/pedagang/status"
-              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-secondary shadow-xs transition-all space-y-2 group"
+              className="bg-white p-5 rounded-2xl border border-border-subtle hover:border-primary shadow-card transition-all space-y-2 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors border border-border-subtle">
                 <FileText className="w-5 h-5" />
               </div>
-              <h4 className="text-sm font-bold text-primary group-hover:text-secondary">
+              <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">
                 Status Verifikasi
               </h4>
               <p className="text-xs text-text-muted">

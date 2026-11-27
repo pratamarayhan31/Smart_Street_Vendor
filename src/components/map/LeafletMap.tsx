@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Vendor } from '@/types';
-import { Loader2, MapPin, RefreshCw, ZoomIn, ZoomOut, Compass } from 'lucide-react';
+import { Loader2, MapPin, Compass } from 'lucide-react';
 
 interface LeafletMapProps {
   vendors: Vendor[];
@@ -42,11 +42,9 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
       return;
     }
 
-    // Jika belum ada di window, load CSS & JS secara dinamis
     let isMounted = true;
 
     const loadLeafletAssets = async () => {
-      // Pastikan CSS ada
       if (!document.getElementById('leaflet-css-fallback')) {
         const link = document.createElement('link');
         link.id = 'leaflet-css-fallback';
@@ -55,7 +53,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
         document.head.appendChild(link);
       }
 
-      // Pastikan JS dimuat
       if (!window.L) {
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
@@ -64,7 +61,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
           if (isMounted) setIsLeafletReady(true);
         };
         script.onerror = () => {
-          // Fallback ke CDN Cloudflare jika unpkg gagal
           const fallbackScript = document.createElement('script');
           fallbackScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
           fallbackScript.onload = () => {
@@ -81,7 +77,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
 
     loadLeafletAssets();
 
-    // Fallback polling singkat jika script sudah ada di index.html tapi lambat diinisialisasi
     const interval = setInterval(() => {
       if (window.L) {
         setIsLeafletReady(true);
@@ -102,21 +97,18 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
 
     const L = window.L;
 
-    // Inisialisasi map instance jika belum dibuat
     if (!mapInstanceRef.current) {
       try {
         const map = L.map(mapContainerRef.current, {
-          center: [-5.4297, 105.2625], // Pusat Kota Bandar Lampung
+          center: [-5.4297, 105.2625],
           zoom: 13,
-          zoomControl: false, // Kita pasang kontrol zoom custom atau standar
+          zoomControl: false,
           scrollWheelZoom: interactive,
           attributionControl: true,
         });
 
-        // Kontrol zoom di kanan atas agar rapi
         L.control.zoom({ position: 'topright' }).addTo(map);
 
-        // Tile Layer OpenStreetMap Resmi dengan fallback CartoDB
         const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &bull; Smart Street Vendor Bandar Lampung',
@@ -127,7 +119,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
         markersLayerRef.current = L.layerGroup().addTo(map);
         mapInstanceRef.current = map;
 
-        // Invalidate size agar ukuran peta langsung proporsional
         setTimeout(() => {
           if (mapInstanceRef.current) {
             mapInstanceRef.current.invalidateSize();
@@ -145,18 +136,18 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
     markersLayer.clearLayers();
     markerMapRef.current = {};
 
-    // Helper Pembuat Ikon Marker Sesuai Status & Kategori
+    // Marker dengan palet Merah Utama (#C62828), Kuning (#D97706), Oranye (#EA580C)
     const createCustomIcon = (status: string, isSelected: boolean) => {
-      let bg = '#16A34A'; // hijau terverifikasi
-      if (status === 'menunggu') bg = '#F59E0B'; // kuning
-      if (status === 'revisi') bg = '#D97706'; // oranye
-      if (status === 'ditolak') bg = '#DC2626'; // merah
+      let bg = '#C62828'; // merah utama untuk terverifikasi resmi
+      if (status === 'menunggu') bg = '#D97706'; // kuning
+      if (status === 'revisi') bg = '#EA580C'; // oranye
+      if (status === 'ditolak') bg = '#718096'; // abu gelap
 
       const size = isSelected ? 40 : 32;
-      const border = isSelected ? '3px solid #2170E4' : '2px solid #FFFFFF';
+      const border = isSelected ? '3px solid #DCEEFF' : '2px solid #FFFFFF';
       const shadow = isSelected 
-        ? 'box-shadow: 0 0 0 5px rgba(33, 112, 228, 0.4), 0 8px 15px rgba(0,0,0,0.3);' 
-        : 'box-shadow: 0 4px 8px rgba(0,0,0,0.25);';
+        ? 'box-shadow: 0 0 0 5px rgba(198, 40, 40, 0.4), 0 8px 15px rgba(38, 52, 69, 0.3);' 
+        : 'box-shadow: 0 4px 8px rgba(38, 52, 69, 0.25);';
 
       const html = `
         <div style="background-color: ${bg}; width: ${size}px; height: ${size}px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; ${border}; ${shadow} transition: all 0.25s ease;">
@@ -178,7 +169,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
 
     const bounds: [number, number][] = [];
 
-    // Tambahkan setiap marker pedagang
     vendors.forEach((vendor) => {
       if (!vendor.latitude || !vendor.longitude) return;
 
@@ -190,22 +180,22 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
 
       const popupHtml = `
         <div style="width: 240px; font-family: Inter, system-ui, sans-serif;">
-          <div style="position: relative; width: 100%; height: 110px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #e2e8f0;">
+          <div style="position: relative; width: 100%; height: 110px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #F2F8FF;">
             <img src="${vendor.photoUrl}" alt="${vendor.businessName}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80'" />
           </div>
-          <div style="font-size: 10px; font-weight: 700; color: #0058BE; text-transform: uppercase; margin-bottom: 2px;">
+          <div style="font-size: 10px; font-weight: 700; color: #C62828; text-transform: uppercase; margin-bottom: 2px;">
             ${vendor.category}
           </div>
-          <div style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 4px; line-height: 1.3;">
+          <div style="font-size: 14px; font-weight: 700; color: #263445; margin-bottom: 4px; line-height: 1.3;">
             ${vendor.businessName}
           </div>
-          <div style="font-size: 11px; color: #64748B; margin-bottom: 6px;">
+          <div style="font-size: 11px; color: #718096; margin-bottom: 6px;">
             📍 <b>${vendor.district}</b> &bull; ${vendor.address}
           </div>
-          <div style="font-size: 11px; color: #334155; margin-bottom: 8px;">
+          <div style="font-size: 11px; color: #263445; margin-bottom: 8px;">
             ⏰ ${vendor.operatingHours || '16:00 - 22:00 WIB'}
           </div>
-          <button id="btn-popup-${vendor.id}" style="width: 100%; background-color: #002548; color: white; border: none; border-radius: 6px; padding: 7px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+          <button id="btn-popup-${vendor.id}" style="width: 100%; background-color: #C62828; color: white; border: none; border-radius: 6px; padding: 7px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
             Buka Detail Usaha
           </button>
         </div>
@@ -229,10 +219,8 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
       bounds.push([vendor.latitude, vendor.longitude]);
     });
 
-    // Invalidate size sekali lagi
     map.invalidateSize();
 
-    // Event listener resize window agar peta selalu pas
     const handleResize = () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.invalidateSize();
@@ -245,7 +233,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
     };
   }, [isLeafletReady, vendors, interactive]);
 
-  // 3. Efek Khusus Ketika Pedagang Dipilih di Panel Kiri (Poin 8)
   useEffect(() => {
     if (!mapInstanceRef.current || !selectedVendor) return;
     const map = mapInstanceRef.current;
@@ -255,7 +242,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
         duration: 1.0,
       });
 
-      // Buka popup marker jika ada
       const targetMarker = markerMapRef.current[selectedVendor.id];
       if (targetMarker) {
         setTimeout(() => {
@@ -265,7 +251,6 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
     }
   }, [selectedVendor]);
 
-  // Tombol Reset View ke Pusat Kota Bandar Lampung
   const handleResetView = () => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.flyTo([-5.4297, 105.2625], 13, { duration: 0.8 });
@@ -273,56 +258,53 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[480px] overflow-hidden rounded-xl border border-border-subtle shadow-xs bg-slate-100 flex flex-col">
-      {/* Loading State saat Leaflet di-load */}
+    <div className="relative w-full h-full min-h-[480px] overflow-hidden rounded-xl border border-border-subtle shadow-soft bg-surface-container-low flex flex-col">
       {!isLeafletReady && !loadError && (
-        <div className="absolute inset-0 z-30 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-500">
-          <Loader2 className="w-8 h-8 text-secondary animate-spin" />
-          <span className="text-xs font-semibold">Memuat Peta Spasial Kota Bandar Lampung...</span>
+        <div className="absolute inset-0 z-30 bg-surface-container-low flex flex-col items-center justify-center gap-3 text-text-muted">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <span className="text-xs font-semibold text-text-primary">Memuat Peta Spasial Kota Bandar Lampung...</span>
         </div>
       )}
 
-      {/* Error State */}
       {loadError && (
-        <div className="absolute inset-0 z-30 bg-slate-50 flex flex-col items-center justify-center gap-3 p-6 text-center text-slate-600">
-          <MapPin className="w-10 h-10 text-rose-500" />
-          <p className="text-sm font-bold text-slate-800">{loadError}</p>
+        <div className="absolute inset-0 z-30 bg-white flex flex-col items-center justify-center gap-3 p-6 text-center text-text-primary">
+          <MapPin className="w-10 h-10 text-primary" />
+          <p className="text-sm font-bold">{loadError}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-container"
+            className="px-4 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-hover shadow-soft"
           >
             Muat Ulang Halaman
           </button>
         </div>
       )}
 
-      {/* Kontainer DOM Leaflet yang Sebenarnya */}
       <div
         ref={mapContainerRef}
         className="w-full h-full flex-1 min-h-[480px]"
         style={{ minHeight: height === '100%' ? '480px' : height }}
       />
 
-      {/* Kontrol Cepat di Peta: Tombol Pusatkan Bandar Lampung */}
+      {/* Kontrol Cepat di Peta */}
       <div className="absolute top-4 left-4 z-[990]">
         <button
           onClick={handleResetView}
-          className="bg-white/95 hover:bg-white text-slate-800 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5 backdrop-blur-xs transition-colors"
+          className="bg-white hover:bg-surface-container-low text-text-primary text-xs font-bold px-3 py-1.5 rounded-lg border border-border-subtle shadow-soft flex items-center gap-1.5 transition-colors"
           title="Kembalikan fokus ke pusat Kota Bandar Lampung"
         >
-          <Compass className="w-3.5 h-3.5 text-secondary" />
+          <Compass className="w-3.5 h-3.5 text-primary" />
           <span>Kota Bandar Lampung</span>
         </button>
       </div>
 
-      {/* Legenda Status Pin di Kiri Bawah */}
-      <div className="absolute bottom-4 left-4 z-[990] bg-white/95 backdrop-blur-xs p-2.5 rounded-xl border border-slate-200 shadow-md text-[11px] text-slate-700 space-y-1">
-        <div className="font-bold text-slate-900 border-b border-slate-100 pb-1 mb-1 flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-secondary" />
+      {/* Legenda Status Pin */}
+      <div className="absolute bottom-4 left-4 z-[990] bg-white/95 backdrop-blur-xs p-3 rounded-xl border border-border-subtle shadow-card text-[11px] text-text-primary space-y-1.5">
+        <div className="font-bold border-b border-border-subtle pb-1 mb-1 flex items-center gap-1.5 text-text-primary">
+          <MapPin className="w-3.5 h-3.5 text-primary" />
           <span>Status Lapak PKL</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-primary inline-block" />
           <span>Terverifikasi (Resmi)</span>
         </div>
         <div className="flex items-center gap-2">
@@ -330,7 +312,7 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
           <span>Menunggu Pemeriksaan</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-600 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-500 inline-block" />
           <span>Ditolak / Non-Zonasi</span>
         </div>
       </div>

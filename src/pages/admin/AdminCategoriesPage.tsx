@@ -69,8 +69,8 @@ export const AdminCategoriesPage: React.FC = () => {
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-                <Tags className="w-5 h-5 text-secondary" />
+              <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+                <Tags className="w-5 h-5 text-primary" />
                 Daftar Klasifikasi Kategori Dagangan
               </h2>
               <p className="text-xs text-text-muted">
@@ -79,7 +79,7 @@ export const AdminCategoriesPage: React.FC = () => {
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2.5 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors"
+              className="px-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Tambah Kategori Baru</span>
@@ -92,22 +92,22 @@ export const AdminCategoriesPage: React.FC = () => {
               return (
                 <div
                   key={category.id}
-                  className="bg-white p-5 rounded-2xl border border-border-subtle shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-3"
+                  className="bg-white p-5 rounded-2xl border border-border-subtle shadow-card hover:border-primary/40 transition-all flex flex-col justify-between space-y-3"
                 >
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-secondary bg-sky-50 px-2.5 py-0.5 rounded-full">
+                      <span className="text-xs font-bold text-primary bg-surface-container px-2.5 py-0.5 rounded-full border border-border-subtle">
                         {vendorCount} Lapak Terdaftar
                       </span>
                       <button
                         onClick={() => handleDeleteCategory(category.id, category.name)}
-                        className="text-slate-400 hover:text-rose-600 p-1 rounded transition-colors"
+                        className="text-text-muted hover:text-primary p-1 rounded transition-colors cursor-pointer"
                         title="Hapus Kategori"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <h3 className="font-bold text-base text-primary">
+                    <h3 className="font-bold text-base text-text-primary">
                       {category.name}
                     </h3>
                     <p className="text-xs text-text-muted leading-relaxed">
@@ -123,49 +123,49 @@ export const AdminCategoriesPage: React.FC = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-primary">Tambah Kategori Dagangan</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-700">
+          <div className="bg-white rounded-2xl shadow-card max-w-md w-full p-6 border border-border-subtle space-y-4">
+            <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+              <h3 className="text-base font-bold text-text-primary">Tambah Kategori Dagangan</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-text-muted hover:text-text-primary cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleAddCategory} className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Nama Kategori *</label>
+                <label className="block font-semibold text-text-primary mb-1">Nama Kategori *</label>
                 <input
                   type="text"
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none"
+                  className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   placeholder="Contoh: Tanaman Hias & Pupuk"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Deskripsi &amp; Contoh Komoditas</label>
+                <label className="block font-semibold text-text-primary mb-1">Deskripsi &amp; Contoh Komoditas</label>
                 <textarea
                   rows={3}
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none"
+                  className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   placeholder="Tuliskan contoh barang dagangan dalam kategori ini..."
                 />
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+              <div className="pt-3 border-t border-border-subtle flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50"
+                  className="px-4 py-2 border border-border-subtle text-text-muted font-semibold rounded-xl hover:bg-surface-container-low cursor-pointer transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary text-white font-semibold rounded-xl hover:bg-primary-container"
+                  className="px-4 py-2 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover shadow-xs cursor-pointer transition-colors"
                 >
                   Simpan Kategori
                 </button>

@@ -66,8 +66,8 @@ export const AdminReportPage: React.FC = () => {
           {/* Header Aksi & Export */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-                <FileText className="w-5 h-5 text-secondary" />
+              <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
                 Laporan Pendataan &amp; Verifikasi PKL
               </h2>
               <p className="text-xs text-text-muted">
@@ -77,14 +77,14 @@ export const AdminReportPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrint}
-                className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-border-subtle flex items-center gap-1.5 shadow-xs transition-colors"
+                className="px-3.5 py-2 bg-white hover:bg-surface-container-low text-text-primary text-xs font-semibold rounded-xl border border-border-subtle flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
               >
-                <Printer className="w-4 h-4 text-slate-600" />
+                <Printer className="w-4 h-4 text-text-muted" />
                 <span>Cetak Laporan</span>
               </button>
               <button
                 onClick={handleExportCSV}
-                className="px-3.5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors"
+                className="px-3.5 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Ekspor CSV</span>
@@ -93,14 +93,14 @@ export const AdminReportPage: React.FC = () => {
           </div>
 
           {/* Filter Wilayah */}
-          <div className="bg-white p-4 rounded-2xl border border-border-subtle shadow-xs flex items-center justify-between gap-4">
+          <div className="bg-white p-4 rounded-2xl border border-border-subtle shadow-card flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-xs">
-              <Filter className="w-4 h-4 text-secondary" />
-              <span className="font-semibold text-slate-700">Filter Kecamatan:</span>
+              <Filter className="w-4 h-4 text-primary" />
+              <span className="font-semibold text-text-primary">Filter Kecamatan:</span>
               <select
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="bg-slate-50 border border-border-subtle rounded-xl px-3 py-1.5 text-slate-800 outline-none"
+                className="bg-surface-container-low border border-border-subtle rounded-xl px-3 py-1.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
               >
                 <option value="Semua">Semua Wilayah Bandar Lampung</option>
                 {DISTRICTS.map((d) => (
@@ -108,23 +108,23 @@ export const AdminReportPage: React.FC = () => {
                 ))}
               </select>
             </div>
-            <div className="text-xs text-slate-500 font-semibold">
-              Total {filteredVendors.length} pedagang terdata
+            <div className="text-xs text-text-muted font-semibold">
+              Total <span className="text-primary font-bold">{filteredVendors.length}</span> pedagang terdata
             </div>
           </div>
 
           {/* Rangkuman Matriks Kategori */}
-          <div className="bg-white rounded-2xl border border-border-subtle p-5 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-primary">
+          <div className="bg-white rounded-2xl border border-border-subtle p-5 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-text-primary">
               Distribusi per Kategori Dagangan
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {CATEGORIES.map((cat) => {
                 const count = filteredVendors.filter((v) => v.category === cat.name).length;
                 return (
-                  <div key={cat.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                  <div key={cat.id} className="p-3 bg-surface-container-low rounded-xl border border-border-subtle text-center">
                     <div className="text-lg font-bold text-primary">{count}</div>
-                    <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{cat.name}</div>
+                    <div className="text-[11px] text-text-muted line-clamp-1 mt-0.5">{cat.name}</div>
                   </div>
                 );
               })}
@@ -132,18 +132,18 @@ export const AdminReportPage: React.FC = () => {
           </div>
 
           {/* Tabel Rekapitulasi Lengkap */}
-          <div className="bg-white rounded-2xl border border-border-subtle shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-border-subtle bg-slate-50/50 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <div className="bg-white rounded-2xl border border-border-subtle shadow-card overflow-hidden">
+            <div className="p-4 border-b border-border-subtle bg-surface-container-low/50 flex justify-between items-center">
+              <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
                 Daftar Detil Rekapitulasi Data Pedagang
               </span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-[11px] text-text-muted">
                 Diperbarui per {new Date().toLocaleDateString('id-ID')}
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 text-text-muted border-b border-border-subtle">
+                <thead className="bg-surface-container-low text-text-muted border-b border-border-subtle">
                   <tr>
                     <th className="py-2.5 px-3 font-semibold">No</th>
                     <th className="py-2.5 px-3 font-semibold">Nama Usaha</th>
@@ -154,26 +154,26 @@ export const AdminReportPage: React.FC = () => {
                     <th className="py-2.5 px-3 font-semibold">Izin Publik</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border-subtle/50">
                   {filteredVendors.map((vendor, idx) => (
-                    <tr key={vendor.id} className="hover:bg-slate-50/80">
-                      <td className="py-2.5 px-3 font-mono text-slate-400">{idx + 1}</td>
-                      <td className="py-2.5 px-3 font-bold text-slate-900">{vendor.businessName}</td>
-                      <td className="py-2.5 px-3 text-slate-700">{vendor.ownerName}</td>
-                      <td className="py-2.5 px-3 text-slate-600">{vendor.category}</td>
-                      <td className="py-2.5 px-3 text-slate-600">{vendor.district}</td>
+                    <tr key={vendor.id} className="hover:bg-surface-container-low/60 transition-colors">
+                      <td className="py-2.5 px-3 font-mono text-text-muted">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-bold text-text-primary">{vendor.businessName}</td>
+                      <td className="py-2.5 px-3 text-text-primary">{vendor.ownerName}</td>
+                      <td className="py-2.5 px-3 text-text-muted">{vendor.category}</td>
+                      <td className="py-2.5 px-3 text-text-muted">{vendor.district}</td>
                       <td className="py-2.5 px-3 capitalize font-semibold">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] ${
                           vendor.status === 'terverifikasi'
-                            ? 'bg-emerald-50 text-emerald-700'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : vendor.status === 'revisi'
-                            ? 'bg-amber-50 text-amber-700'
-                            : 'bg-slate-100 text-slate-600'
+                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                            : 'bg-surface-container-low text-text-muted border border-border-subtle'
                         }`}>
                           {vendor.status}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-slate-600">
+                      <td className="py-2.5 px-3 text-text-muted">
                         {vendor.isPublic ? 'Dipublikasikan' : 'Privat'}
                       </td>
                     </tr>

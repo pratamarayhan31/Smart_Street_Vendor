@@ -60,11 +60,11 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           maxZoom: 19,
         }).addTo(map);
 
-        // Marker kustom yang dapat digeser (draggable)
+        // Marker Merah Utama (#C62828)
         const pinIcon = L.divIcon({
           className: 'custom-picker-pin',
           html: `
-            <div style="background-color: #0058BE; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: grab;">
+            <div style="background-color: #C62828; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white; box-shadow: 0 4px 10px rgba(38, 52, 69, 0.3); cursor: grab;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
@@ -120,10 +120,10 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
   return (
     <div className="space-y-2">
-      <div className="relative rounded-xl overflow-hidden border border-border-subtle shadow-xs bg-slate-100 min-h-[380px]">
+      <div className="relative rounded-xl overflow-hidden border border-border-subtle shadow-soft bg-surface-container-low min-h-[380px]">
         {!isLeafletReady && (
-          <div className="absolute inset-0 z-30 bg-slate-50 flex items-center justify-center gap-2 text-xs text-slate-500">
-            <Loader2 className="w-5 h-5 text-secondary animate-spin" />
+          <div className="absolute inset-0 z-30 bg-surface-container-low flex items-center justify-center gap-2 text-xs text-text-muted">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" />
             <span>Memuat peta penentuan lokasi...</span>
           </div>
         )}
@@ -131,21 +131,21 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         <button
           type="button"
           onClick={handleCenterBandarLampung}
-          className="absolute top-3 right-3 z-[1000] bg-white/95 hover:bg-white text-primary text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 shadow-md flex items-center gap-1.5"
+          className="absolute top-3 right-3 z-[1000] bg-white hover:bg-surface-container-low text-text-primary text-xs font-bold px-3 py-1.5 rounded-lg border border-border-subtle shadow-soft flex items-center gap-1.5 transition-colors"
         >
-          <Navigation className="w-3.5 h-3.5 text-secondary" />
-          Pusat Kota Bandar Lampung
+          <Navigation className="w-3.5 h-3.5 text-primary" />
+          <span>Pusat Kota Bandar Lampung</span>
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-        <div className="flex items-center gap-2 text-slate-700">
-          <MapPin className="w-4 h-4 text-secondary flex-shrink-0" />
-          <span>Klik pada peta atau geser pin biru ke lokasi lapak berjualan Anda.</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-surface-container-low border border-border-subtle rounded-xl text-xs">
+        <div className="flex items-center gap-2 text-text-primary">
+          <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+          <span>Klik pada peta atau geser pin merah ke lokasi lapak berjualan Anda.</span>
         </div>
-        <div className="flex items-center gap-3 font-mono font-medium text-slate-800 bg-white px-2.5 py-1 rounded-md border border-slate-200">
+        <div className="flex items-center gap-3 font-mono font-medium text-text-primary bg-white px-3 py-1 rounded-md border border-border-subtle shadow-soft">
           <span>Lat: {latitude || '-5.429700'}</span>
-          <span className="text-slate-300">|</span>
+          <span className="text-border-subtle">|</span>
           <span>Lng: {longitude || '105.262500'}</span>
         </div>
       </div>

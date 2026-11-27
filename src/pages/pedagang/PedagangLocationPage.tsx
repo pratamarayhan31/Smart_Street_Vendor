@@ -72,23 +72,23 @@ export const PedagangLocationPage: React.FC = () => {
             </div>
           )}
 
-          <div className="p-3.5 bg-amber-50/80 border border-amber-200/80 rounded-xl text-xs text-amber-900 flex items-start gap-2.5">
-            <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="p-3.5 bg-surface-container-low border border-border-subtle rounded-xl text-xs text-text-primary flex items-start gap-2.5">
+            <ShieldAlert className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             <div>
               <strong>Informasi Ketentuan Lokasi:</strong> Penentuan titik lapak pada peta digunakan untuk memudahkan pembeli menemukan usaha Anda dan membantu verifikasi dinas. Penandaan ini tidak otomatis memberikan izin penggunaan fasilitas umum atau jalan.
             </div>
           </div>
 
           <form onSubmit={handleSave} className="space-y-6">
-            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-secondary" />
-                <h3 className="text-sm font-bold text-primary">Wilayah Administratif &amp; Alamat</h3>
+            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+              <div className="border-b border-border-subtle pb-3 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-bold text-text-primary">Wilayah Administratif &amp; Alamat</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Kecamatan *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Kecamatan *</label>
                   <select
                     value={district}
                     onChange={(e) => {
@@ -96,7 +96,7 @@ export const PedagangLocationPage: React.FC = () => {
                       const dObj = DISTRICTS.find((d) => d.name === e.target.value);
                       if (dObj) setSubDistrict(dObj.subDistricts[0]);
                     }}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   >
                     {DISTRICTS.map((d) => (
                       <option key={d.id} value={d.name}>{d.name}</option>
@@ -105,11 +105,11 @@ export const PedagangLocationPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Kelurahan *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Kelurahan *</label>
                   <select
                     value={subDistrict}
                     onChange={(e) => setSubDistrict(e.target.value)}
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   >
                     {currentDistrictObj.subDistricts.map((sub) => (
                       <option key={sub} value={sub}>{sub}</option>
@@ -118,28 +118,28 @@ export const PedagangLocationPage: React.FC = () => {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 mb-1">Keterangan Alamat / Patokan Lengkap *</label>
+                  <label className="block font-semibold text-text-primary mb-1">Keterangan Alamat / Patokan Lengkap *</label>
                   <input
                     type="text"
                     required
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Contoh: Jl. R.A. Kartini No. 45 (Depan Apotek Enggal)"
-                    className="w-full bg-slate-50 border border-border-subtle rounded-xl p-2.5 outline-none focus:bg-white"
+                    className="w-full bg-surface-container-low border border-border-subtle rounded-xl p-2.5 text-text-primary outline-none focus:bg-white focus:border-primary transition-all"
                   />
                 </div>
               </div>
             </div>
 
             {/* Peta Interaktif Penentuan Pin */}
-            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-xs space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+            <div className="bg-white rounded-2xl border border-border-subtle p-6 shadow-card space-y-4">
+              <div className="border-b border-border-subtle pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-secondary" />
-                  <h3 className="text-sm font-bold text-primary">Titik Koordinat Peta Spasial</h3>
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <h3 className="text-sm font-bold text-text-primary">Titik Koordinat Peta Spasial</h3>
                 </div>
-                <span className="text-[11px] text-slate-500">
-                  Geser pin biru untuk menyesuaikan lokasi
+                <span className="text-[11px] text-text-muted">
+                  Geser pin merah untuk menyesuaikan lokasi lapak
                 </span>
               </div>
 
@@ -157,7 +157,7 @@ export const PedagangLocationPage: React.FC = () => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-primary hover:bg-primary-container text-white font-semibold text-sm rounded-xl shadow-xs transition-colors"
+                className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Simpan Titik Lokasi
               </button>

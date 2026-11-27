@@ -106,8 +106,8 @@ export const AdminVerificationPage: React.FC = () => {
           )}
 
           {/* Ketentuan Pemeriksaan Sistem */}
-          <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl text-xs text-slate-700 flex items-start gap-2.5">
-            <ShieldCheck className="w-4 h-4 text-secondary flex-shrink-0 mt-0.5" />
+          <div className="p-3.5 bg-surface-container-low border border-border-subtle rounded-xl text-xs text-text-primary flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             <div>
               <strong>Ketentuan Pemeriksaan Sistem:</strong> Verifikasi aplikasi hanya memvalidasi kelengkapan data usaha, kategori, dan titik koordinat untuk kebutuhan pendataan dan pemetaan. Verifikasi ini <em>bukan</em> merupakan izin usaha resmi dan tidak menggantikan perizinan legal dari instansi berwenang.
             </div>
@@ -116,10 +116,10 @@ export const AdminVerificationPage: React.FC = () => {
           {/* SPLIT LAYOUT VERIFIKASI */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* AREA KIRI: ANTREAN PENGAJUAN (5 KOLOM) */}
-            <div className="lg:col-span-5 bg-white rounded-2xl border border-border-subtle p-4 shadow-xs space-y-3">
+            <div className="lg:col-span-5 bg-white rounded-2xl border border-border-subtle p-4 shadow-card space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-primary flex items-center gap-2">
-                  <CheckSquare className="w-4 h-4 text-secondary" />
+                <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-primary" />
                   Antrean Pengajuan ({filteredQueue.length})
                 </h3>
                 <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 font-semibold">
@@ -133,10 +133,10 @@ export const AdminVerificationPage: React.FC = () => {
                   <button
                     key={st}
                     onClick={() => setFilterStatus(st)}
-                    className={`px-2.5 py-1 rounded-lg font-medium capitalize text-[11px] whitespace-nowrap transition-colors ${
+                    className={`px-2.5 py-1 rounded-lg font-medium capitalize text-[11px] whitespace-nowrap transition-colors cursor-pointer ${
                       filterStatus === st
-                        ? 'bg-primary text-white font-semibold'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-primary text-white font-semibold shadow-xs'
+                        : 'bg-surface-container-low text-text-muted hover:text-text-primary hover:bg-surface-container border border-border-subtle'
                     }`}
                   >
                     {st}
@@ -146,20 +146,20 @@ export const AdminVerificationPage: React.FC = () => {
 
               {/* Pencarian Antrean */}
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                <Search className="w-3.5 h-3.5 text-text-muted absolute left-3 top-2.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari pedagang / ID pengajuan..."
-                  className="w-full text-xs bg-slate-50 border border-border-subtle rounded-xl pl-8 pr-3 py-2 outline-none focus:bg-white"
+                  className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl pl-8 pr-3 py-2 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary transition-all"
                 />
               </div>
 
               {/* List Antrean */}
               <div className="space-y-2 max-h-[580px] overflow-y-auto pr-1">
                 {filteredQueue.length === 0 ? (
-                  <div className="text-center py-10 text-slate-400 text-xs">
+                  <div className="text-center py-10 text-text-muted text-xs">
                     Tidak ada pengajuan pada filter ini.
                   </div>
                 ) : (
@@ -174,25 +174,25 @@ export const AdminVerificationPage: React.FC = () => {
                         }}
                         className={`p-3 rounded-xl border transition-all cursor-pointer ${
                           isSelected
-                            ? 'border-secondary bg-surface-container-low shadow-xs'
-                            : 'border-border-subtle hover:border-slate-300 hover:bg-slate-50'
+                            ? 'border-primary bg-surface-container-low shadow-xs'
+                            : 'border-border-subtle hover:border-border-subtle hover:bg-surface-container-low/50'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <span className="text-[10px] font-bold text-secondary uppercase block">
+                            <span className="text-[10px] font-bold text-primary uppercase block">
                               {vendor.category}
                             </span>
-                            <h4 className="text-xs font-bold text-slate-900 truncate">
+                            <h4 className="text-xs font-bold text-text-primary truncate">
                               {vendor.businessName}
                             </h4>
-                            <p className="text-[11px] text-slate-500 mt-0.5">
+                            <p className="text-[11px] text-text-muted mt-0.5">
                               {vendor.ownerName} &bull; {vendor.district}
                             </p>
                           </div>
                           <StatusBadge status={vendor.status} size="sm" />
                         </div>
-                        <div className="mt-2 text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-100 pt-1.5">
+                        <div className="mt-2 text-[10px] text-text-muted flex items-center justify-between border-t border-border-subtle pt-1.5">
                           <span>{vendor.id}</span>
                           <span>{new Date(vendor.submittedAt).toLocaleDateString('id-ID')}</span>
                         </div>
@@ -204,18 +204,18 @@ export const AdminVerificationPage: React.FC = () => {
             </div>
 
             {/* AREA KANAN: PANEL DETAIL & KEPUTUSAN VERIFIKASI (7 KOLOM) */}
-            <div className="lg:col-span-7 bg-white rounded-2xl border border-border-subtle p-5 shadow-xs space-y-6">
+            <div className="lg:col-span-7 bg-white rounded-2xl border border-border-subtle p-5 shadow-card space-y-6">
               {selectedVendor ? (
                 <>
                   <div className="flex items-start justify-between border-b border-border-subtle pb-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-secondary uppercase bg-sky-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-bold text-primary uppercase bg-surface-container px-2 py-0.5 rounded border border-border-subtle">
                           {selectedVendor.id}
                         </span>
                         <StatusBadge status={selectedVendor.status} />
                       </div>
-                      <h3 className="text-lg font-bold text-primary">
+                      <h3 className="text-lg font-bold text-text-primary">
                         {selectedVendor.businessName}
                       </h3>
                       <p className="text-xs text-text-muted">
@@ -226,10 +226,10 @@ export const AdminVerificationPage: React.FC = () => {
 
                   {/* Foto Usaha */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <label className="text-xs font-bold uppercase tracking-wider text-text-muted">
                       Foto Tampak Depan Lapak
                     </label>
-                    <div className="h-52 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <div className="h-52 w-full rounded-xl overflow-hidden bg-surface-container-low border border-border-subtle">
                       <img
                         src={selectedVendor.photoUrl}
                         alt={selectedVendor.businessName}
@@ -240,43 +240,43 @@ export const AdminVerificationPage: React.FC = () => {
 
                   {/* Data Identitas & Usaha */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
-                      <div className="text-slate-400 flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-secondary" />
+                    <div className="p-3 bg-surface-container-low rounded-xl border border-border-subtle space-y-1">
+                      <div className="text-text-muted flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-primary" />
                         <span>Nama Pemilik</span>
                       </div>
-                      <div className="font-semibold text-slate-900">{selectedVendor.ownerName}</div>
-                      <div className="text-slate-500 text-[11px]">NIK: {selectedVendor.nik || 'Tidak dicantumkan'}</div>
+                      <div className="font-semibold text-text-primary">{selectedVendor.ownerName}</div>
+                      <div className="text-text-muted text-[11px]">NIK: {selectedVendor.nik || 'Tidak dicantumkan'}</div>
                     </div>
 
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
-                      <div className="text-slate-400 flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-secondary" />
+                    <div className="p-3 bg-surface-container-low rounded-xl border border-border-subtle space-y-1">
+                      <div className="text-text-muted flex items-center gap-1.5">
+                        <Phone className="w-3.5 h-3.5 text-primary" />
                         <span>Nomor WhatsApp / HP</span>
                       </div>
-                      <div className="font-semibold text-slate-900">{selectedVendor.phone}</div>
-                      <div className="text-slate-500 text-[11px]">Jam: {selectedVendor.operatingHours || '16:00 - 22:00 WIB'}</div>
+                      <div className="font-semibold text-text-primary">{selectedVendor.phone}</div>
+                      <div className="text-text-muted text-[11px]">Jam: {selectedVendor.operatingHours || '16:00 - 22:00 WIB'}</div>
                     </div>
                   </div>
 
                   {/* Lokasi & Titik Koordinat */}
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1 text-xs">
-                    <div className="text-slate-400 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-secondary" />
+                  <div className="p-3.5 bg-surface-container-low rounded-xl border border-border-subtle space-y-1 text-xs">
+                    <div className="text-text-muted flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" />
                       <span>Lokasi Berjualan</span>
                     </div>
-                    <div className="font-semibold text-slate-900">
+                    <div className="font-semibold text-text-primary">
                       {selectedVendor.district}, Kelurahan {selectedVendor.subDistrict}
                     </div>
-                    <div className="text-slate-600">{selectedVendor.address}</div>
-                    <div className="text-[11px] font-mono text-slate-500 pt-1">
+                    <div className="text-text-muted">{selectedVendor.address}</div>
+                    <div className="text-[11px] font-mono text-primary pt-1">
                       Koordinat Spasial: Lat {selectedVendor.latitude}, Lng {selectedVendor.longitude}
                     </div>
                   </div>
 
                   {/* Form Catatan / Alasan Pemeriksaan */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-text-primary">
                       Catatan / Alasan Verifikasi Petugas
                     </label>
                     <textarea
@@ -284,7 +284,7 @@ export const AdminVerificationPage: React.FC = () => {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Tuliskan catatan perbaikan data atau alasan keputusan verifikasi..."
-                      className="w-full text-xs bg-slate-50 border border-border-subtle rounded-xl p-3 outline-none focus:bg-white focus:border-secondary"
+                      className="w-full text-xs bg-surface-container-low border border-border-subtle rounded-xl p-3 text-text-primary placeholder:text-text-muted/60 outline-none focus:bg-white focus:border-primary transition-all"
                     />
                     <p className="text-[11px] text-text-muted">
                       Catatan ini akan langsung terlihat oleh pedagang di portal usahanya jika status meminta perbaikan.
@@ -292,11 +292,11 @@ export const AdminVerificationPage: React.FC = () => {
                   </div>
 
                   {/* Tombol Aksi Verifikasi */}
-                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                  <div className="pt-2 border-t border-border-subtle flex flex-wrap items-center justify-between gap-3">
                     <button
                       type="button"
                       onClick={() => handleDecision('ditolak')}
-                      className="px-3.5 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors flex items-center gap-1.5"
+                      className="px-3.5 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
                       <XCircle className="w-4 h-4" />
                       <span>Tolak Pengajuan</span>
@@ -306,7 +306,7 @@ export const AdminVerificationPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleDecision('revisi')}
-                        className="px-3.5 py-2 text-xs font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-xl transition-colors flex items-center gap-1.5"
+                        className="px-3.5 py-2 text-xs font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
                       >
                         <AlertTriangle className="w-4 h-4 text-amber-600" />
                         <span>Minta Perbaikan Data</span>
@@ -315,7 +315,7 @@ export const AdminVerificationPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleDecision('terverifikasi')}
-                        className="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
+                        className="px-5 py-2 text-xs font-semibold text-white bg-primary hover:bg-primary-hover rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
                       >
                         <CheckCircle className="w-4 h-4" />
                         <span>Setujui &amp; Verifikasi</span>
@@ -324,7 +324,7 @@ export const AdminVerificationPage: React.FC = () => {
                   </div>
                 </>
               ) : (
-                <div className="text-center py-16 text-slate-400 text-xs">
+                <div className="text-center py-16 text-text-muted text-xs">
                   Pilih salah satu pengajuan dari antrean di sebelah kiri.
                 </div>
               )}

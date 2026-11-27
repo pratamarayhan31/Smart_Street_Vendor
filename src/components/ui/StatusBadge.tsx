@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { VerificationStatus } from '@/types';
 
@@ -15,38 +13,38 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
   > = {
     menunggu: {
       label: 'Menunggu Verifikasi',
-      bg: 'bg-warning-surface',
+      bg: 'bg-amber-50',
       text: 'text-amber-800',
       border: 'border-amber-200',
       dot: 'bg-amber-500',
     },
     ditinjau: {
       label: 'Sedang Ditinjau',
-      bg: 'bg-surface-container-low',
-      text: 'text-secondary',
-      border: 'border-blue-200',
-      dot: 'bg-secondary',
+      bg: 'bg-surface-container',
+      text: 'text-text-primary',
+      border: 'border-border-subtle',
+      dot: 'bg-primary',
     },
     revisi: {
       label: 'Perlu Perbaikan',
-      bg: 'bg-amber-50',
-      text: 'text-amber-700',
-      border: 'border-amber-300',
-      dot: 'bg-amber-600',
+      bg: 'bg-orange-50',
+      text: 'text-orange-800',
+      border: 'border-orange-200',
+      dot: 'bg-orange-500',
     },
     terverifikasi: {
       label: 'Terverifikasi',
-      bg: 'bg-success-surface',
-      text: 'text-emerald-700',
+      bg: 'bg-emerald-50',
+      text: 'text-emerald-800',
       border: 'border-emerald-200',
       dot: 'bg-emerald-500',
     },
     ditolak: {
       label: 'Ditolak',
-      bg: 'bg-danger-surface',
-      text: 'text-rose-700',
+      bg: 'bg-rose-50',
+      text: 'text-primary',
       border: 'border-rose-200',
-      dot: 'bg-rose-500',
+      dot: 'bg-primary',
     },
   };
 
@@ -56,7 +54,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
       ? 'px-2 py-0.5 text-xs'
       : size === 'lg'
       ? 'px-3.5 py-1.5 text-sm font-semibold'
-      : 'px-2.5 py-1 text-xs font-medium';
+      : 'px-2.5 py-1 text-xs font-semibold';
 
   return (
     <span
@@ -67,4 +65,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
     </span>
   );
 };
-
