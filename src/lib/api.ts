@@ -115,6 +115,26 @@ export function updateStoredSessionUser(user: User) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
+function isSpecificBackendError(err: any): boolean {
+  if (!err || !err.message) return false;
+  const msg = String(err.message);
+  if (
+    msg === 'BACKEND_UNAVAILABLE' ||
+    msg.includes('BACKEND_UNAVAILABLE') ||
+    msg.includes('Failed to fetch') ||
+    msg.includes('NetworkError') ||
+    msg.includes('Load failed') ||
+    msg.includes('405') ||
+    msg.includes('404') ||
+    msg.includes('502') ||
+    msg.includes('503') ||
+    msg.includes('Permintaan gagal')
+  ) {
+    return false;
+  }
+  return true;
+}
+
 /**
  * Melakukan panggilan API ke backend Express jika tersedia.
  * Jika backend tidak tersedia (misal di Vercel static atau server belum jalan),
@@ -130,9 +150,18 @@ async function tryApiRequest<T>(path: string, options: RequestInit = {}): Promis
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(path, { ...options, headers });
-  
-  // Periksa jika server mengembalikan HTML (misal Vercel 404 rewrite ke index.html)
+  let res: Response;
+  try {
+    res = await fetch(path, { ...options, headers });
+  } catch {
+    throw new Error('BACKEND_UNAVAILABLE');
+  }
+
+  // Jika status 404 (Not Found), 405 (Method Not Allowed pada Vercel static), atau 5xx
+  if (res.status === 404 || res.status === 405 || res.status >= 500) {
+    throw new Error('BACKEND_UNAVAILABLE');
+  }
+
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
     throw new Error('BACKEND_UNAVAILABLE');
@@ -141,14 +170,10 @@ async function tryApiRequest<T>(path: string, options: RequestInit = {}): Promis
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    // Jika endpoint mengembalikan 401/400 dengan pesan JSON resmi dari backend
     if (data && data.message) {
       throw new Error(data.message);
     }
-    if (res.status === 404 || res.status === 502 || res.status === 503) {
-      throw new Error('BACKEND_UNAVAILABLE');
-    }
-    throw new Error(data.message || `Permintaan gagal (${res.status})`);
+    throw new Error('BACKEND_UNAVAILABLE');
   }
 
   return data as T;
@@ -166,7 +191,7 @@ export async function loginApi(identifier: string, password: string, _role?: Rol
     return data;
   } catch (err: any) {
     // Jika error adalah pesan validasi resmi dari backend (misal kata sandi salah), lemparkan ke UI
-    if (err.message && err.message !== 'BACKEND_UNAVAILABLE' && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (isSpecificBackendError(err)) {
       throw err;
     }
 
@@ -229,7 +254,7 @@ export async function registerApi(payload: {
     setAuthSession(data.token, data.user);
     return data;
   } catch (err: any) {
-    if (err.message && err.message !== 'BACKEND_UNAVAILABLE' && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (isSpecificBackendError(err)) {
       throw err;
     }
 
@@ -325,7 +350,7 @@ export async function changePasswordApi(oldPassword: string, newPassword: string
       body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
     });
   } catch (err: any) {
-    if (err.message && err.message !== 'BACKEND_UNAVAILABLE' && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (isSpecificBackendError(err)) {
       throw err;
     }
 
@@ -358,7 +383,7 @@ export async function verifyForgotPasswordApi(email: string, phone: string, secu
       body: JSON.stringify({ email, phone, securityHint }),
     });
   } catch (err: any) {
-    if (err.message && err.message !== 'BACKEND_UNAVAILABLE' && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (isSpecificBackendError(err)) {
       throw err;
     }
 
@@ -402,7 +427,7 @@ export async function resetPasswordApi(resetToken: string, newPassword: string, 
       body: JSON.stringify({ resetToken, newPassword, confirmPassword }),
     });
   } catch (err: any) {
-    if (err.message && err.message !== 'BACKEND_UNAVAILABLE' && !err.message.includes('Failed to fetch') && !err.message.includes('NetworkError')) {
+    if (isSpecificBackendError(err)) {
       throw err;
     }
 
