@@ -8,28 +8,43 @@ Proyek kolaborasi riset dan pengabdian masyarakat antara **Pemerintah Kota Banda
 
 ## 🌟 Ringkasan Aplikasi
 
-Smart Street Vendor dibangun berdasarkan **Product Requirements Document (PRD v1.0)** dan **Desain UI/UX Google Stitch** dengan standar modern:
-- **Design System Google Stitch**: Token warna resmi Navy (`#002548`), Blue Container (`#173B63`), Interactive Blue (`#0058BE`), Font *Inter*, dan komponen berstandar UI/UX modern.
+Smart Street Vendor dibangun berdasarkan **Product Requirements Document (PRD v1.0)** dengan standar UI/UX modern, profesional, dan responsif:
+- **Design System Profesional**: Palet warna elegan Merah Utama (`#C62828`), Merah Sekunder (`#E04444`), Putih (`#FFFFFF`), Biru Muda (`#DCEEFF`), dan Biru Sangat Muda (`#F2F8FF`), dengan tipografi yang bersih dan nyaman dibaca.
 - **Dua Logo Resmi Institusi**: Terintegrasi proporsional tanpa distorsi pada navigasi header, footer, dan modul dashboard:
   1. *Logo Pemerintah Kota Bandar Lampung*
   2. *Logo Universitas Teknokrat Indonesia*
-- **Peta Spasial Digital**: Menggunakan OpenStreetMap (OSM) dan Leaflet.js dengan titik koordinat presisi lapak PKL di 14+ kecamatan Kota Bandar Lampung.
-- **Manajemen Alur Verifikasi Data**: Alur 5 status verifikasi (*Menunggu Verifikasi*, *Sedang Ditinjau*, *Perlu Perbaikan*, *Terverifikasi*, *Ditolak*) dengan fitur catatan perbaikan dari admin.
-- **Perlindungan Privasi**: Data pribadi sensitif seperti NIK dan nomor kontak pedagang dirahasiakan dari tampilan masyarakat umum.
+- **Autentikasi Penuh & Aman (Fullstack Security)**:
+  - Database lokal SQLite (`sql.js`) dengan penyimpanan data terenkripsi.
+  - Hashing kata sandi satu arah dengan algoritma `bcryptjs`.
+  - Token sesi digital berbasis JSON Web Token (JWT) 24 jam.
+  - Validasi ketat pada saat login (menolak akun fiktif atau kata sandi yang salah).
+  - Fitur registrasi pedagang baru langsung terhubung ke database.
+  - Fitur **Ganti Kata Sandi** (*Change Password*) dan **Lupa Kata Sandi** (*Reset Password*).
+  - Proteksi rute halaman (*Protected Routes*) berdasarkan peran (Admin vs Pedagang).
+- **Peta Spasial Digital**: Menggunakan OpenStreetMap (OSM) dan Leaflet.js dengan titik penanda bulat (*circular pin*) berikon rumah putih dan warna status terstandar:
+  - 🟢 **Hijau (`#16A34A`)**: Lapak Disetujui / Terverifikasi.
+  - 🟡 **Kuning (`#EAB308`)**: Lapak Menunggu Pemeriksaan.
+  - 🔴 **Merah (`#DC2626`)**: Lapak Ditolak / Non-Zonasi.
+- **Katalog Pedagang Lengkap**: Halaman eksplorasi PKL dengan pencarian nama usaha, filter kategori, filter kecamatan, pengurutan, pagination responsif, dan modal rincian pedagang.
+- **Manajemen Alur Verifikasi Data**: Alur status verifikasi (*Menunggu Verifikasi*, *Sedang Ditinjau*, *Perlu Perbaikan*, *Terverifikasi*, *Ditolak*) dengan fitur catatan perbaikan dari admin.
+- **Perlindungan Privasi**: Data sensitif seperti NIK pedagang dirahasiakan dari publik dan hanya dapat diakses oleh petugas admin dinas terkait.
 
 ---
 
 ## 🚀 Panduan Menjalankan Aplikasi Secara Lokal
 
-### 1. Menjalankan Mode Development
+### 1. Menjalankan Mode Development (Frontend + Backend Sekaligus)
 Buka terminal di folder proyek ini dan jalankan:
 ```bash
 npm run dev
 ```
-Aplikasi akan aktif dan dapat dibuka langsung melalui browser di:
-`http://localhost:3000` (atau port yang ditampilkan di terminal).
+Perintah ini akan secara otomatis menyalakan:
+- **Server Backend API (Express + SQLite):** `http://localhost:4000`
+- **Aplikasi Web Frontend (Vite + React):** `http://localhost:3000`
 
-### 2. Membangun & Menjalankan Versi Produksi
+Buka browser Anda di `http://localhost:3000`.
+
+### 2. Membangun Versi Produksi
 ```bash
 npm run build
 npm run preview
@@ -37,40 +52,44 @@ npm run preview
 
 ---
 
-## 🧭 Panduan Navigasi & Uji Coba Peran Pengguna
+## 🔐 Kredensial Akun untuk Pengujian Sistem
 
-Aplikasi telah dilengkapi **One-Click Role Switcher** pada halaman login dan header untuk memudahkan evaluasi:
+| Peran | Identifier (Email / No. HP) | Kata Sandi | Hak Akses Utama |
+|---|---|---|---|
+| **Admin Pemkot** | `admin@bandarlampungkota.go.id` | `admin123` | Dashboard Command Center, Verifikasi Berkas Pengajuan, Master Data PKL, Manajemen Kategori, Peta Pantau, Laporan Rekapitulasi & Cetak/CSV. |
+| **Pedagang Terdaftar** | `081278912345` *(atau `joko@gmail.com`)* | `password123` | Dashboard Lapak Mandiri, Perbarui Profil Usaha & Foto, Penyesuaian Titik Pin Peta (GPS), Kirim Catatan Revisi, Ganti Kata Sandi. |
+| **Pedagang Baru** | Daftar mandiri melalui menu **"Daftar Usaha Baru"** di `/register` | Dibuat saat registrasi | Mengelola lapak baru yang didaftarkan secara mandiri. |
 
-### A. Portal Publik (Masyarakat)
-- **Beranda (`/#/`)**: Hero pencarian lapak, statistik PKL terdata, peta persebaran interaktif, dan katalog kuliner/dagangan.
+> **Catatan Keamanan:** Sistem menerapkan validasi kredensial nyata. Jika nomor HP/email atau kata sandi tidak cocok, login akan ditolak dengan pesan kesalahan yang sesuai.
+
+---
+
+## 🧭 Struktur Halaman Utama
+
+### A. Portal Publik (Masyarakat & Wisatawan)
+- **Beranda (`/#/`)**: Hero pencarian lapak, statistik PKL terdata, peta persebaran interaktif, dan galeri produk UMKM.
 - **Peta Digital PKL (`/#/peta`)**: Peta layar penuh dengan penanda lokasi, panel filter kecamatan & kategori, serta drawer rincian lapak.
-- **Detail Lapak**: Klik tombol "Lihat Rincian" pada kartu atau penanda peta untuk melihat foto lapak, jam operasional, dan lokasi.
+- **Katalog Pedagang (`/#/katalog`)**: Pusat pencarian dan eksplorasi data PKL Kota Bandar Lampung dengan filter lengkap dan kartu rincian usaha.
 
 ### B. Portal Admin Pemkot (`/#/admin/dashboard`)
-*Akses Instan: Klik tombol **Admin** di navbar atas atau tombol **Masuk Admin** di halaman login.*
-- **Dashboard Command Center (`/#/admin/dashboard`)**: Metrik KPI jumlah pedagang, antrean baru, sebaran per kecamatan, dan status sistem.
-- **Verifikasi Pengajuan (`/#/admin/verifikasi`)**: Antrean pengajuan dengan split layout. Petugas dapat:
-  - *Setujui & Verifikasi* (lapak langsung aktif di peta publik)
-  - *Minta Perbaikan Data* (mengirim catatan instruksi revisi ke pedagang)
-  - *Tolak Pengajuan* (disertai alasan penolakan)
-- **Data Master Pedagang (`/#/admin/pedagang`)**: Tabel pencarian, filter, tambah data baru, dan tombol toggle publikasi data lapak.
-- **Kategori Dagangan (`/#/admin/kategori`)**: Kelola master klasifikasi kategori dagangan.
-- **Wilayah Administratif (`/#/admin/wilayah`)**: Referensi 14+ Kecamatan dan Kelurahan Kota Bandar Lampung.
-- **Peta Monitoring Spasial (`/#/admin/peta`)**: Pemantauan spasial seluruh lapak dengan filter status verifikasi.
+- **Dashboard Command Center (`/#/admin/dashboard`)**: Metrik KPI jumlah pedagang, antrean pengajuan, sebaran wilayah, dan aktivitas terkini.
+- **Verifikasi Pengajuan (`/#/admin/verifikasi`)**: Tinjau berkas, setujui lapak, minta revisi dengan catatan instruksi, atau tolak pengajuan.
+- **Data Master Pedagang (`/#/admin/pedagang`)**: Tabel pencarian, filter, tambah pedagang baru, dan tombol toggle publikasi ke peta publik.
+- **Kategori Dagangan (`/#/admin/kategori`)**: Tambah dan hapus klasifikasi jenis dagangan PKL.
+- **Wilayah Administratif (`/#/admin/wilayah`)**: Referensi 14+ Kecamatan dan Kelurahan se-Kota Bandar Lampung.
+- **Peta Monitoring Spasial (`/#/admin/peta`)**: Pemantauan titik seluruh lapak PKL di atas peta digital.
 - **Rekapitulasi Laporan (`/#/admin/laporan`)**: Tabel rekapitulasi lengkap dengan fitur **Cetak Laporan** dan **Ekspor CSV**.
 
 ### C. Portal Mandiri Pedagang PKL (`/#/pedagang/dashboard`)
-*Akses Instan: Klik tombol **Portal Pedagang** di navbar atas atau tombol **Masuk Pedagang** di halaman login.*
-- **Dashboard Usaha (`/#/pedagang/dashboard`)**: Ringkasan status verifikasi, identitas usaha, dan notifikasi catatan revisi dari admin.
-- **Profil & Data Usaha (`/#/pedagang/profil`)**: Pengisian data pedagang, nama lapak, kategori, jam buka-tutup, dan unggah foto tempat usaha.
-- **Titik Lokasi Peta (`/#/pedagang/lokasi`)**: Penentuan lokasi presisi menggunakan pin peta interaktif (Leaflet draggable pin) yang otomatis menangkap Latitude & Longitude.
-- **Status & Perbaikan Data (`/#/pedagang/status`)**: Timeline tahapan pemeriksaan berkas dan formulir kirim balik perbaikan data ke admin.
+- **Dashboard Usaha (`/#/pedagang/dashboard`)**: Ringkasan status pendaftaran lapak, kartu status, dan catatan instruksi petugas dinas.
+- **Profil & Data Usaha (`/#/pedagang/profil`)**: Kelola identitas pemilik, NIK, nama usaha, jam operasional, dan unggah foto lapak.
+- **Titik Lokasi Peta (`/#/pedagang/lokasi`)**: Penentuan titik koordinat lapak dengan pin peta interaktif (Leaflet draggable marker).
+- **Status & Perbaikan Data (`/#/pedagang/status`)**: Pantau alur 3 tahap verifikasi dan kirim konfirmasi perbaikan data setelah revisi.
 
 ---
 
 ## 📋 Ketentuan Sistem
-1. Status verifikasi dalam aplikasi ini merupakan validasi pendataan sistem, bukan izin usaha resmi atau penetapan legalitas pemakaian lahan oleh pemerintah.
+1. Pendataan dan verifikasi dalam sistem ini berfungsi untuk pemetaan digital, pembinaan UMKM, dan evaluasi penataan tata ruang Smart City Kota Bandar Lampung.
 
 ---
 *Dikembangkan dengan dedikasi untuk kemajuan Smart City Kota Bandar Lampung.*
-
