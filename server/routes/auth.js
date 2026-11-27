@@ -40,13 +40,6 @@ router.post('/login', (req, res) => {
     });
   }
 
-  if (role && user.role !== role) {
-    const roleLabel = user.role === 'admin' ? 'Admin Pemkot' : 'Pedagang PKL';
-    return res.status(403).json({
-      message: `Akun ini terdaftar sebagai ${roleLabel}. Silakan pilih tab peran yang sesuai.`,
-    });
-  }
-
   const isPasswordValid = bcrypt.compareSync(String(password), user.password_hash);
   if (!isPasswordValid) {
     return res.status(401).json({
