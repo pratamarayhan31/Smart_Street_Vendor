@@ -1,0 +1,190 @@
+import React, { useState } from 'react';
+import { AdminSidebar } from '@/components/layout/AdminSidebar';
+import { AdminHeader } from '@/components/layout/AdminHeader';
+import { getStoredVendors } from '@/lib/store';
+import { DISTRICTS, CATEGORIES } from '@/lib/data';
+import { FileText, Printer, Download, Filter, CheckCircle2 } from 'lucide-react';
+
+export const AdminReportPage: React.FC = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [vendors] = useState(() => getStoredVendors());
+  const [selectedDistrict, setSelectedDistrict] = useState('Semua');
+
+  const filteredVendors = vendors.filter((v) => {
+    return selectedDistrict === 'Semua' || v.district === selectedDistrict;
+  });
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExportCSV = () => {
+    const headers = ['ID', 'Nama Usaha', 'Pemilik', 'Kategori', 'Kecamatan', 'Alamat', 'Status', 'Publik'];
+    const rows = filteredVendors.map((v) => [
+      v.id,
+      `"${v.businessName}"`,
+      `"${v.ownerName}"`,
+      `"${v.category}"`,
+      `"${v.district}"`,
+      `"${v.address}"`,
+      v.status,
+      v.isPublic ? 'Ya' : 'Tidak',
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Rekapitulasi_PKL_Bandar_Lampung_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="flex h-screen bg-background overflow-hidden font-sans">
+      <div className="hidden md:flex flex-shrink-0">
+        <AdminSidebar />
+      </div>
+
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div className="fixed inset-0 bg-slate-900/60" onClick={() => setSidebarOpen(false)} />
+          <div className="relative z-10 w-64 h-full">
+            <AdminSidebar onClose={() => setSidebarOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <AdminHeader 
+          title="Rekapitulasi Data & Laporan PKL" 
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)} 
+        />
+
+        <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl">
+          {/* Header Aksi & Export */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                <FileText className="w-5 h-5 text-secondary" />
+                Laporan Pendataan &amp; Verifikasi PKL
+              </h2>
+              <p className="text-xs text-text-muted">
+                Rekapitulasi resmi data pedagang kaki lima Kota Bandar Lampung &bull; Data Simulasi Evaluasi
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePrint}
+                className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-border-subtle flex items-center gap-1.5 shadow-xs transition-colors"
+              >
+                <Printer className="w-4 h-4 text-slate-600" />
+                <span>Cetak Laporan</span>
+              </button>
+              <button
+                onClick={handleExportCSV}
+                className="px-3.5 py-2 bg-primary hover:bg-primary-container text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Ekspor CSV</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Filter Wilayah */}
+          <div className="bg-white p-4 rounded-2xl border border-border-subtle shadow-xs flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-xs">
+              <Filter className="w-4 h-4 text-secondary" />
+              <span className="font-semibold text-slate-700">Filter Kecamatan:</span>
+              <select
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                className="bg-slate-50 border border-border-subtle rounded-xl px-3 py-1.5 text-slate-800 outline-none"
+              >
+                <option value="Semua">Semua Wilayah Bandar Lampung</option>
+                {DISTRICTS.map((d) => (
+                  <option key={d.id} value={d.name}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="text-xs text-slate-500 font-semibold">
+              Total {filteredVendors.length} pedagang terdata
+            </div>
+          </div>
+
+          {/* Rangkuman Matriks Kategori */}
+          <div className="bg-white rounded-2xl border border-border-subtle p-5 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-primary">
+              Distribusi per Kategori Dagangan
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {CATEGORIES.map((cat) => {
+                const count = filteredVendors.filter((v) => v.category === cat.name).length;
+                return (
+                  <div key={cat.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                    <div className="text-lg font-bold text-primary">{count}</div>
+                    <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{cat.name}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tabel Rekapitulasi Lengkap */}
+          <div className="bg-white rounded-2xl border border-border-subtle shadow-xs overflow-hidden">
+            <div className="p-4 border-b border-border-subtle bg-slate-50/50 flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                Daftar Detil Rekapitulasi Data Pedagang
+              </span>
+              <span className="text-[11px] text-slate-500">
+                Diperbarui per {new Date().toLocaleDateString('id-ID')}
+              </span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-slate-50 text-text-muted border-b border-border-subtle">
+                  <tr>
+                    <th className="py-2.5 px-3 font-semibold">No</th>
+                    <th className="py-2.5 px-3 font-semibold">Nama Usaha</th>
+                    <th className="py-2.5 px-3 font-semibold">Pemilik</th>
+                    <th className="py-2.5 px-3 font-semibold">Kategori</th>
+                    <th className="py-2.5 px-3 font-semibold">Kecamatan</th>
+                    <th className="py-2.5 px-3 font-semibold">Status Data</th>
+                    <th className="py-2.5 px-3 font-semibold">Izin Publik</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredVendors.map((vendor, idx) => (
+                    <tr key={vendor.id} className="hover:bg-slate-50/80">
+                      <td className="py-2.5 px-3 font-mono text-slate-400">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-bold text-slate-900">{vendor.businessName}</td>
+                      <td className="py-2.5 px-3 text-slate-700">{vendor.ownerName}</td>
+                      <td className="py-2.5 px-3 text-slate-600">{vendor.category}</td>
+                      <td className="py-2.5 px-3 text-slate-600">{vendor.district}</td>
+                      <td className="py-2.5 px-3 capitalize font-semibold">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                          vendor.status === 'terverifikasi'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : vendor.status === 'revisi'
+                            ? 'bg-amber-50 text-amber-700'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {vendor.status}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-slate-600">
+                        {vendor.isPublic ? 'Dipublikasikan' : 'Privat'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
