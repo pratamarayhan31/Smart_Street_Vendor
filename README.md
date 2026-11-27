@@ -68,9 +68,8 @@ Aplikasi telah dilengkapi **One-Click Role Switcher** pada halaman login dan hea
 
 ---
 
-## 📋 Catatan Penafian & Etika Sistem
-1. Data nama lapak, pedagang, dan koordinat dalam prototipe ini berstatus **Data Simulasi** untuk keperluan riset dan pengujian fungsionalitas sistem informasi.
-2. Status verifikasi dalam aplikasi ini merupakan validasi pendataan sistem, bukan izin usaha resmi atau penetapan legalitas pemakaian lahan oleh pemerintah.
+## 📋 Ketentuan Sistem
+1. Status verifikasi dalam aplikasi ini merupakan validasi pendataan sistem, bukan izin usaha resmi atau penetapan legalitas pemakaian lahan oleh pemerintah.
 
 ---
 *Dikembangkan dengan dedikasi untuk kemajuan Smart City Kota Bandar Lampung.*

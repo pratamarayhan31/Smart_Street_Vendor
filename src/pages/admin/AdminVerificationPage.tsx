@@ -105,7 +105,7 @@ export const AdminVerificationPage: React.FC = () => {
             </div>
           )}
 
-          {/* Penafian Verifikasi Data */}
+          {/* Ketentuan Pemeriksaan Sistem */}
           <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl text-xs text-slate-700 flex items-start gap-2.5">
             <ShieldCheck className="w-4 h-4 text-secondary flex-shrink-0 mt-0.5" />
             <div>

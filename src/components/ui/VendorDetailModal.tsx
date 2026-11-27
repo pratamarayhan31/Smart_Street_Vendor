@@ -172,7 +172,7 @@ export const VendorDetailModal: React.FC<VendorDetailModalProps> = ({
             </div>
           )}
 
-          {/* Penafian Privasi Publik */}
+          {/* Kebijakan Privasi Publik */}
           {!isAdminView && (
             <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 text-xs text-slate-600 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-secondary flex-shrink-0" />

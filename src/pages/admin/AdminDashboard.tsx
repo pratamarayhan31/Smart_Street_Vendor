@@ -60,10 +60,9 @@ export const AdminDashboard: React.FC = () => {
           {/* Banner Sambutan Command Center */}
           <div className="bg-primary text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
             <div className="relative z-10 max-w-2xl space-y-2">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 text-xs text-sky-200 border border-white/15">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs text-sky-200 border border-white/15">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 <span>Pusat Kendali Pengelolaan PKL</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                <span className="text-amber-300 font-semibold">Data Simulasi</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold">
                 Admin Command Center PKL Kota Bandar Lampung

@@ -52,12 +52,8 @@ export const PublicNavbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Action Buttons & Simulation Indicator */}
+          {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <span className="text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">
-              Prototipe / Data Simulasi
-            </span>
-            <div className="h-4 w-[1px] bg-slate-200" />
             <Link
               href="/login"
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary hover:text-secondary hover:bg-slate-50 rounded-lg transition-colors border border-border-subtle"
@@ -96,12 +92,7 @@ export const PublicNavbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border-subtle bg-white px-4 pt-2 pb-4 space-y-2 shadow-lg">
-          <div className="py-1">
-            <span className="text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full inline-block mb-2">
-              Prototipe / Data Simulasi
-            </span>
-          </div>
+        <div className="md:hidden border-t border-border-subtle bg-white px-4 pt-3 pb-4 space-y-2 shadow-lg">
           {navLinks.map((link) => {
             const Icon = link.icon;
             return (

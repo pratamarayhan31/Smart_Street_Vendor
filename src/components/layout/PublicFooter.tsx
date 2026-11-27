@@ -31,9 +31,6 @@ export const PublicFooter: React.FC = () => {
               Sistem Informasi Pendataan, Verifikasi, dan Pemetaan Spasial Pedagang Kaki Lima (PKL) 
               berbasis web untuk mendukung ekosistem perkotaan yang tertib, modern, dan terhubung.
             </p>
-            <div className="text-xs text-amber-300 bg-amber-950/50 border border-amber-800/60 p-2.5 rounded-lg max-w-md">
-              <strong>Catatan Penafian:</strong> Data titik lokasi dan pedagang dalam prototipe ini berstatus data simulasi untuk keperluan evaluasi sistem Smart City.
-            </div>
           </div>
 
           {/* Kolom 2: Navigasi Cepat */}

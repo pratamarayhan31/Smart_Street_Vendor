@@ -390,3 +390,4 @@ export const KatalogPage: React.FC = () => {
     </div>
   );
 };
+

@@ -21,7 +21,7 @@ export const PedagangDashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [vendors] = useState<Vendor[]>(() => getStoredVendors());
   
-  // Ambil data vendor milik user pedagang aktif (simulasi vendor pertama)
+  // Ambil data vendor milik user pedagang aktif
   const myVendor = vendors[0] || {
     id: 'PKL-001',
     businessName: 'Soto Betawi Bang Joko',

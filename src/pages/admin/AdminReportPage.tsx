@@ -71,7 +71,7 @@ export const AdminReportPage: React.FC = () => {
                 Laporan Pendataan &amp; Verifikasi PKL
               </h2>
               <p className="text-xs text-text-muted">
-                Rekapitulasi resmi data pedagang kaki lima Kota Bandar Lampung &bull; Data Simulasi Evaluasi
+                Rekapitulasi resmi data pedagang kaki lima Kota Bandar Lampung
               </p>
             </div>
             <div className="flex items-center gap-2">
