@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 import { LeafletMap } from '@/components/map/LeafletMap';
 import { VendorDetailModal } from '@/components/ui/VendorDetailModal';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import { getStoredVendors, getStoredCategories } from '@/lib/store';
 import { DISTRICTS } from '@/lib/data';
 import { Vendor } from '@/types';
@@ -19,16 +20,13 @@ export const PublicMapPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Semua');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
+  const [selectedStatus, setSelectedStatus] = useState<string>('Semua');
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [modalVendor, setModalVendor] = useState<Vendor | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const publicVendors = useMemo(() => {
-    return vendors.filter((v) => v.isPublic && v.status === 'terverifikasi');
-  }, [vendors]);
-
   const filteredVendors = useMemo(() => {
-    return publicVendors.filter((v) => {
+    return vendors.filter((v) => {
       const matchSearch =
         searchQuery === '' ||
         v.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,14 +39,21 @@ export const PublicMapPage: React.FC = () => {
       const matchCategory =
         selectedCategory === 'Semua' || v.category === selectedCategory;
 
-      return matchSearch && matchDistrict && matchCategory;
+      const matchStatus =
+        selectedStatus === 'Semua' ||
+        (selectedStatus === 'terverifikasi' && v.status === 'terverifikasi') ||
+        (selectedStatus === 'menunggu' && (v.status === 'menunggu' || v.status === 'ditinjau' || v.status === 'revisi')) ||
+        (selectedStatus === 'ditolak' && v.status === 'ditolak');
+
+      return matchSearch && matchDistrict && matchCategory && matchStatus;
     });
-  }, [publicVendors, searchQuery, selectedDistrict, selectedCategory]);
+  }, [vendors, searchQuery, selectedDistrict, selectedCategory, selectedStatus]);
 
   const handleReset = () => {
     setSearchQuery('');
     setSelectedDistrict('Semua');
     setSelectedCategory('Semua');
+    setSelectedStatus('Semua');
     setSelectedVendor(null);
   };
 
@@ -77,7 +82,7 @@ export const PublicMapPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="md:hidden p-1.5 text-text-muted hover:text-text-primary"
+                className="md:hidden p-1.5 text-text-muted hover:text-text-primary cursor-pointer"
               >
                 Tutup
               </button>
@@ -118,12 +123,23 @@ export const PublicMapPage: React.FC = () => {
                   <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
+
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="text-xs bg-white border border-border-subtle rounded-lg px-2.5 py-2 text-text-primary outline-none font-medium cursor-pointer col-span-2"
+              >
+                <option value="Semua">Semua Status Lapak</option>
+                <option value="terverifikasi">Disetujui / Terverifikasi (Resmi)</option>
+                <option value="menunggu">Menunggu Pemeriksaan</option>
+                <option value="ditolak">Ditolak / Non-Zonasi</option>
+              </select>
             </div>
 
-            {(searchQuery || selectedDistrict !== 'Semua' || selectedCategory !== 'Semua') && (
+            {(searchQuery || selectedDistrict !== 'Semua' || selectedCategory !== 'Semua' || selectedStatus !== 'Semua') && (
               <button
                 onClick={handleReset}
-                className="w-full flex items-center justify-center gap-1.5 py-1.5 text-xs font-bold text-primary bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors border border-rose-200"
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 text-xs font-bold text-primary bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors border border-rose-200 cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 Reset Filter
@@ -171,15 +187,18 @@ export const PublicMapPage: React.FC = () => {
                       <p className="text-[11px] text-text-muted truncate mt-0.5">
                         {vendor.district} &bull; {vendor.address}
                       </p>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setModalVendor(vendor);
-                        }}
-                        className="text-[10px] font-bold text-primary hover:underline mt-1 block"
-                      >
-                        Detail Lengkap
-                      </button>
+                      <div className="flex items-center justify-between gap-1 mt-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalVendor(vendor);
+                          }}
+                          className="text-[10px] font-bold text-primary hover:underline block"
+                        >
+                          Detail Lengkap
+                        </button>
+                        <StatusBadge status={vendor.status} size="sm" />
+                      </div>
                     </div>
                   </div>
                 );

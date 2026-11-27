@@ -126,7 +126,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             <LeafletMap
-              vendors={publicVendors}
+              vendors={vendors}
               onSelectVendor={(v) => setSelectedVendorForModal(v)}
               height="420px"
             />
