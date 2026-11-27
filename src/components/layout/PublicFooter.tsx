@@ -46,6 +46,9 @@ export const PublicFooter: React.FC = () => {
                 <Link href="/" className="hover:text-white transition-colors">Beranda Publik</Link>
               </li>
               <li>
+                <Link href="/katalog" className="hover:text-white transition-colors">Katalog Pedagang</Link>
+              </li>
+              <li>
                 <Link href="/peta" className="hover:text-white transition-colors">Peta Digital PKL</Link>
               </li>
               <li>

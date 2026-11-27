@@ -18,7 +18,7 @@ export const PublicNavbar: React.FC = () => {
   const navLinks = [
     { label: 'Beranda', href: '/', icon: Store },
     { label: 'Peta Digital PKL', href: '/peta', icon: MapPin },
-    { label: 'Katalog Pedagang', href: '/#katalog', icon: Compass },
+    { label: 'Katalog Pedagang', href: '/katalog', icon: Compass },
   ];
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from '@/lib/router';
 import { HomePage } from '@/pages/HomePage';
+import { KatalogPage } from '@/pages/KatalogPage';
 import { PublicMapPage } from '@/pages/PublicMapPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
@@ -26,6 +27,10 @@ export const App: React.FC = () => {
   // Route Dispatcher
   if (path === '/' || path === '') {
     return <HomePage />;
+  }
+
+  if (path === '/katalog') {
+    return <KatalogPage />;
   }
 
   if (path === '/peta') {
@@ -91,4 +96,3 @@ export const App: React.FC = () => {
 };
 
 export default App;
-
